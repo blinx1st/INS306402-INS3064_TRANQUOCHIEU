@@ -1,5 +1,5 @@
 <?php
-$scores = [60, 70, 80, 90]; // ví dụ input
+$scores = [60, 70, 80, 90, 100]; // ví dụ input
 
 // Calculate stats
 $sum = 0;
