@@ -8,11 +8,13 @@ function esc(string $value): string
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search</title>
 </head>
+
 <body>
     <h1>Search</h1>
 
@@ -26,4 +28,5 @@ function esc(string $value): string
         <p>You searched for: <strong><?php echo esc($query); ?></strong></p>
     <?php endif; ?>
 </body>
+
 </html>

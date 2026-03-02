@@ -21,6 +21,6 @@ report('length too short', validateLength('hi', 3, 10), false);
 report('length too long', validateLength('this is too long', 3, 10), false);
 
 echo PHP_EOL . "=== validatePassword() ===" . PHP_EOL;
-report('valid password (length + special char)', validatePassword('Abcdef1!'), true);
+report('valid password', validatePassword('Abcdef1!'), true);
 report('missing special char', validatePassword('Abcdef12'), false);
 report('too short', validatePassword('Ab1!'), false);

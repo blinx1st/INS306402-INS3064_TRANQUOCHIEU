@@ -45,11 +45,13 @@ function esc(string $value): string
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arithmetic Calculator</title>
 </head>
+
 <body>
     <h1>Arithmetic Calculator</h1>
 
@@ -84,4 +86,5 @@ function esc(string $value): string
         <p><strong><?php echo esc($message); ?></strong></p>
     <?php endif; ?>
 </body>
+
 </html>
