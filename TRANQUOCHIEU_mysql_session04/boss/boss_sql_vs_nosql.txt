@@ -1,0 +1,58 @@
+Boss Fight: SQL vs NoSQL Decision
+================================
+
+Scenario 1: High-velocity social media feed → Choose NoSQL (distributed key-value / document store)
+
+Why (engineering justification):
+1) Horizontal scalability for write-heavy workloads:
+   - Social feeds are “fan-out” + massive concurrent writes/reads.
+   - NoSQL systems are designed to scale out (add nodes) more naturally than classic SQL (which often scales up vertically first).
+2) Schema flexibility for fast product iteration:
+   - Feed items evolve constantly (new reaction types, embed formats, metadata, experiments).
+   - Document-style NoSQL lets you add fields without costly migrations; you can store heterogeneous post shapes.
+3) Latency + high throughput access patterns:
+   - Feeds usually query by user_id + time (or ranking score) and need fast pagination.
+   - Key-value / wide-column models fit “get latest N items” patterns and can be heavily cached.
+4) Consistency tradeoffs are acceptable:
+   - Many feed features can tolerate eventual consistency (likes count, view counts, “seen” status).
+   - You can design with denormalization to avoid expensive joins at read time.
+
+ACID note:
+- A feed typically does NOT require strict ACID across the whole system; you can keep ACID where needed
+  (e.g., a small SQL service for payments/ads billing), while the feed itself favors availability + scale.
+
+Summary:
+- NoSQL wins because horizontal scalability + schema flexibility + throughput/latency alignment matter more
+  than full ACID guarantees for a timeline.
+
+------------------------------------------------------
+
+Scenario 2: Secure bank ledger → Choose SQL (relational database, often with strong transaction support)
+
+Why (engineering justification):
+1) ACID is non-negotiable:
+   - Banking ledgers need atomicity (no partial transfers), consistency (balances obey rules),
+     isolation (concurrent transactions don’t corrupt totals), durability (committed = permanent).
+2) Strong integrity constraints + relationships:
+   - Foreign keys, constraints, triggers, and normalized schema prevent invalid states
+     (e.g., orphaned transactions, negative balances if not allowed, double-spend patterns).
+3) Auditing, compliance, and deterministic correctness:
+   - SQL databases support robust auditing strategies, clear transaction logs, and repeatable queries.
+   - You need traceability, reconciliations, and exact historical reporting.
+4) Consistency over availability (for this core system):
+   - A ledger should prefer correctness even if it means rejecting/queueing operations under load.
+   - Horizontal scaling is possible (read replicas, partitioning, sharding), but the *core write path*
+     typically stays strongly consistent.
+
+Scalability note (vertical/horizontal):
+- SQL often scales vertically very well (bigger machine) and can scale horizontally with careful design
+  (partitioning/sharding, replicas). For a ledger, that tradeoff is acceptable because correctness/ACID
+  is the priority.
+
+Schema flexibility note:
+- A ledger benefits from a stable, well-defined schema (less “flex,” more governance).
+  Changes are controlled via migrations to preserve compatibility and auditability.
+
+Summary:
+- SQL wins because ACID + strict integrity + audit/compliance requirements dominate, and the schema should
+  be controlled, not fluid.
