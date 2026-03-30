@@ -1,81 +1,75 @@
 <?php
 // students/create.php
-// This page shows a form to create a new student and handles the POST request.
+// Form thêm sinh viên mới, có validate & xử lý lỗi DB
 
-// Include Database class
 require_once __DIR__ . '/../classes/Database.php';
 
-// Initialize variables for form fields and errors
 $errors = [];
 $name   = '';
 $email  = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // 1. Read form data, trim whitespace
+    // Lấy dữ liệu từ form
     $name  = trim($_POST['name']  ?? '');
     $email = trim($_POST['email'] ?? '');
 
-    // 2. Validate data
+    // 1. Validate phía server
     if ($name === '') {
-        $errors['name'] = 'Name is required.';
+        $errors['name'] = 'Vui lòng nhập họ tên.';
     }
 
     if ($email === '') {
-        $errors['email'] = 'Email is required.';
+        $errors['email'] = 'Vui lòng nhập email.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = 'Invalid email format.';
+        $errors['email'] = 'Email không hợp lệ.';
     }
 
-    // 3. If no validation errors, try to insert into database
+    // 2. Nếu không có lỗi validate thì xử lý DB
     if (empty($errors)) {
         try {
             $db = Database::getInstance();
 
-            // Check if the email is already used by another student
+            // Kiểm tra email đã tồn tại chưa
             $existing = $db->fetch('SELECT id FROM students WHERE email = ?', [$email]);
 
             if ($existing) {
-                // If there is already a student with this email, add error
-                $errors['email'] = 'This email is already taken.';
+                $errors['email'] = 'Email đã tồn tại.';
             } else {
-                // Insert new student record
+                // Thêm bản ghi mới
                 $db->insert('students', [
                     'name'  => $name,
                     'email' => $email,
                 ]);
 
-                // Redirect back to the list with a success flag
+                // Redirect về danh sách với thông báo success
                 header('Location: index.php?success=1');
                 exit;
             }
         } catch (Exception $e) {
-            // Generic error message displayed to the user
-            // Detailed message was logged inside Database class
-            $errors['general'] = 'An error occurred. Please try again later.';
+            // Không show message nhạy cảm, chỉ báo lỗi chung
+            $errors['general'] = 'Có lỗi xảy ra, vui lòng thử lại sau.';
         }
     }
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
-    <title>Add Student</title>
+    <title>Thêm sinh viên</title>
 </head>
 
 <body>
-    <h1>Add New Student</h1>
+    <h1>Thêm sinh viên mới</h1>
 
     <?php if (!empty($errors['general'])): ?>
-        <!-- General error (e.g., DB connection issue) -->
         <p style="color: red;"><?= htmlspecialchars($errors['general']) ?></p>
     <?php endif; ?>
 
     <form method="post">
         <div>
-            <label>Name:</label><br>
-            <!-- Keep old value after validation errors -->
+            <label>Họ tên:</label><br>
             <input type="text" name="name" value="<?= htmlspecialchars($name) ?>">
             <?php if (!empty($errors['name'])): ?>
                 <span style="color: red;"><?= htmlspecialchars($errors['name']) ?></span>
@@ -90,8 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
         </div>
 
-        <button type="submit">Save</button>
-        <a href="index.php">Cancel</a>
+        <button type="submit">Lưu</button>
+        <a href="index.php">Hủy</a>
     </form>
 
 </body>

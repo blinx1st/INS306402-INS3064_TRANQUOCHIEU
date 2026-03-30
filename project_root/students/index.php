@@ -1,32 +1,30 @@
 <?php
 // students/index.php
-// This page shows a table of all students with links to create, edit, and delete.
+// Hiển thị danh sách sinh viên, link sang thêm/sửa/xóa
 
-// Include the Database class
 require_once __DIR__ . '/../classes/Database.php';
 
-// Get the shared Database instance
 $db = Database::getInstance();
 
-// Fetch all students from the database, newest first
+// Lấy tất cả sinh viên, sắp xếp mới nhất lên trước
 $students = $db->fetchAll('SELECT * FROM students ORDER BY created_at DESC');
 
-// Read simple success messages from query string (optional UX)
+// Đọc message đơn giản qua query string
 $successMessage = '';
 if (isset($_GET['success'])) {
-    $successMessage = 'Student created successfully.';
+    $successMessage = 'Thêm sinh viên thành công!';
 } elseif (isset($_GET['updated'])) {
-    $successMessage = 'Student updated successfully.';
+    $successMessage = 'Cập nhật sinh viên thành công!';
 } elseif (isset($_GET['deleted'])) {
-    $successMessage = 'Student deleted successfully.';
+    $successMessage = 'Xóa sinh viên thành công!';
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
-    <title>Student Management</title>
+    <title>Quản lý sinh viên</title>
     <style>
         table {
             border-collapse: collapse;
@@ -68,42 +66,35 @@ if (isset($_GET['success'])) {
 </head>
 
 <body>
-    <h1>Student Management</h1>
+    <h1>Quản lý sinh viên</h1>
 
     <?php if ($successMessage): ?>
-        <!-- Show success message if available -->
         <p style="color: green;"><?= htmlspecialchars($successMessage) ?></p>
     <?php endif; ?>
 
     <p>
-        <!-- Link to create a new student -->
-        <a href="create.php" class="btn btn-add">+ Add Student</a>
+        <a href="create.php" class="btn btn-add">+ Thêm sinh viên</a>
     </p>
 
     <table>
         <tr>
             <th>ID</th>
-            <th>Name</th>
+            <th>Họ tên</th>
             <th>Email</th>
-            <th>Created At</th>
-            <th>Actions</th>
+            <th>Ngày tạo</th>
+            <th>Hành động</th>
         </tr>
 
         <?php foreach ($students as $student): ?>
             <tr>
-                <!-- Directly show numeric ID and timestamp -->
                 <td><?= $student['id'] ?></td>
-                <!-- Escape text to avoid XSS -->
                 <td><?= htmlspecialchars($student['name']) ?></td>
                 <td><?= htmlspecialchars($student['email']) ?></td>
                 <td><?= $student['created_at'] ?></td>
                 <td>
-                    <!-- Edit and delete links; id is passed via query string -->
-                    <a href="edit.php?id=<?= $student['id'] ?>" class="btn btn-edit">Edit</a>
+                    <a href="edit.php?id=<?= $student['id'] ?>" class="btn btn-edit">Sửa</a>
                     <a href="delete.php?id=<?= $student['id'] ?>" class="btn btn-delete"
-                        onclick="return confirm('Are you sure you want to delete this student?');">
-                        Delete
-                    </a>
+                        onclick="return confirm('Bạn chắc chắn muốn xóa?');">Xóa</a>
                 </td>
             </tr>
         <?php endforeach; ?>

@@ -8,8 +8,7 @@
 </head>
 
 <body>
-    <h1>My Website</h1>
-    <button class="btn btn-primary">Click Me</button>
+
 </body>
 
 </html>

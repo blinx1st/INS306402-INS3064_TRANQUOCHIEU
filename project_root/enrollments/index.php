@@ -1,12 +1,10 @@
 <?php
 // enrollments/index.php
-// This page shows all enrollments (student + course) using JOINs.
 
 require_once __DIR__ . '/../classes/Database.php';
 
 $db = Database::getInstance();
 
-// Join enrollments with students and courses to display readable names
 $sql = 'SELECT e.id,
                s.name  AS student_name,
                s.email,
@@ -20,28 +18,28 @@ $sql = 'SELECT e.id,
 $enrollments = $db->fetchAll($sql);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
-    <title>Enrollments</title>
+    <title>Danh sách đăng ký học</title>
 </head>
 
 <body>
-    <h1>Enrollments</h1>
+    <h1>Danh sách đăng ký học</h1>
 
     <p>
-        <a href="create.php">+ Add Enrollment</a>
+        <a href="create.php">+ Thêm đăng ký</a>
     </p>
 
     <table border="1" cellpadding="8" cellspacing="0">
         <tr>
             <th>ID</th>
-            <th>Student</th>
+            <th>Sinh viên</th>
             <th>Email</th>
-            <th>Course</th>
-            <th>Enrolled At</th>
-            <th>Actions</th>
+            <th>Khóa học</th>
+            <th>Thời gian đăng ký</th>
+            <th>Hành động</th>
         </tr>
 
         <?php foreach ($enrollments as $enroll): ?>
@@ -53,9 +51,7 @@ $enrollments = $db->fetchAll($sql);
                 <td><?= $enroll['enrolled_at'] ?></td>
                 <td>
                     <a href="delete.php?id=<?= $enroll['id'] ?>"
-                        onclick="return confirm('Cancel this enrollment?');">
-                        Delete
-                    </a>
+                        onclick="return confirm('Hủy đăng ký này?');">Xóa</a>
                 </td>
             </tr>
         <?php endforeach; ?>
