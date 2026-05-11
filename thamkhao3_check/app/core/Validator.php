@@ -44,6 +44,13 @@ class Validator
                 $errors[] = 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.';
             }
         }
+        if ($table === 'SuKien' && !empty($data['CheckinMoLuc']) && !empty($data['CheckinDongLuc'])) {
+            $open = strtotime((string)$data['CheckinMoLuc']);
+            $close = strtotime((string)$data['CheckinDongLuc']);
+            if ($open !== false && $close !== false && $close < $open) {
+                $errors[] = 'Thời gian đóng QR phải sau hoặc bằng thời gian mở QR.';
+            }
+        }
         if (array_key_exists('HocKy', $data) && trim((string)$data['HocKy']) !== '' && !in_array($data['HocKy'], ['HK1', 'HK2', 'HK3'], true)) {
             $errors[] = 'Học kỳ chỉ được chọn HK1, HK2 hoặc HK3.';
         }

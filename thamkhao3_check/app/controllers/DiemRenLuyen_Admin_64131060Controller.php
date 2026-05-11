@@ -13,6 +13,7 @@ class DiemRenLuyen_Admin_64131060Controller extends ResourceController
         $this->requireRoles(['TVCN']);
         $hocKy = trim($_GET['HocKy'] ?? '');
         $namHoc = trim($_GET['NamHoc'] ?? '');
+        $maCLB = trim($_GET['MaCLB'] ?? '') ?: null;
         Validator::validateResource([
             'table' => 'ExportDiem',
             'fields' => [
@@ -21,7 +22,7 @@ class DiemRenLuyen_Admin_64131060Controller extends ResourceController
             ],
         ], ['HocKy' => $hocKy, 'NamHoc' => $namHoc]);
 
-        $rows = $this->repo()->termPointTotals($hocKy, $namHoc);
+        $rows = $this->repo()->termPointTotals($hocKy, $namHoc, $maCLB);
         header('Content-Type: text/csv; charset=UTF-8');
         header('Content-Disposition: attachment; filename="diem-ren-luyen-' . $hocKy . '-' . $namHoc . '.csv"');
         echo "\xEF\xBB\xBF";

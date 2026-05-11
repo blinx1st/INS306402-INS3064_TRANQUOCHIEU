@@ -12,8 +12,11 @@ DROP TABLE IF EXISTS BaiDang;
 DROP TABLE IF EXISTS DiemDanh;
 DROP TABLE IF EXISTS ThanhVienNhom;
 DROP TABLE IF EXISTS NhomHocTap;
+DROP TABLE IF EXISTS CheckinSuKien;
 DROP TABLE IF EXISTS ThanhVienSuKien;
 DROP TABLE IF EXISTS SuKien;
+DROP TABLE IF EXISTS ThanhVienCLB;
+DROP TABLE IF EXISTS CLB;
 DROP TABLE IF EXISTS LoaiSuKien;
 DROP TABLE IF EXISTS ThanhVien;
 DROP TABLE IF EXISTS VaiTro;
@@ -40,9 +43,29 @@ CREATE TABLE LoaiSuKien (
     MoTa TEXT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE CLB (
+    MaCLB VARCHAR(50) PRIMARY KEY,
+    TenCLB VARCHAR(150) NOT NULL,
+    MoTa TEXT,
+    ChuNhiem VARCHAR(50) NULL,
+    NgayThanhLap DATE NULL,
+    CONSTRAINT fk_clb_chunhiem FOREIGN KEY (ChuNhiem) REFERENCES ThanhVien(MaThanhVien)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE ThanhVienCLB (
+    MaCLB VARCHAR(50) NOT NULL,
+    MaThanhVien VARCHAR(50) NOT NULL,
+    VaiTroCLB VARCHAR(50) NOT NULL DEFAULT 'Thành viên',
+    NgayThamGia DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (MaCLB, MaThanhVien),
+    CONSTRAINT fk_tvclb_clb FOREIGN KEY (MaCLB) REFERENCES CLB(MaCLB),
+    CONSTRAINT fk_tvclb_thanhvien FOREIGN KEY (MaThanhVien) REFERENCES ThanhVien(MaThanhVien)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE SuKien (
     MaSuKien VARCHAR(50) PRIMARY KEY,
     TenSuKien VARCHAR(100) NOT NULL,
+    MaCLB VARCHAR(50) NOT NULL,
     MaLoaiSuKien VARCHAR(50) NOT NULL,
     HocKy VARCHAR(10) NOT NULL,
     NamHoc VARCHAR(20) NOT NULL,
@@ -50,6 +73,11 @@ CREATE TABLE SuKien (
     NgayBatDau DATETIME NOT NULL,
     NgayKetThuc DATETIME NOT NULL,
     NguoiToChuc VARCHAR(50) NOT NULL,
+    SucChua INT NOT NULL DEFAULT 50,
+    CheckinToken VARCHAR(64) NOT NULL DEFAULT '',
+    CheckinMoLuc DATETIME NOT NULL,
+    CheckinDongLuc DATETIME NOT NULL,
+    CONSTRAINT fk_sukien_clb FOREIGN KEY (MaCLB) REFERENCES CLB(MaCLB),
     CONSTRAINT fk_sukien_loai FOREIGN KEY (MaLoaiSuKien) REFERENCES LoaiSuKien(MaLoaiSuKien),
     CONSTRAINT fk_sukien_nguoitochuc FOREIGN KEY (NguoiToChuc) REFERENCES ThanhVien(MaThanhVien)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -65,6 +93,19 @@ CREATE TABLE ThanhVienSuKien (
     CONSTRAINT fk_tvsk_sukien FOREIGN KEY (MaSuKien) REFERENCES SuKien(MaSuKien),
     CONSTRAINT fk_tvsk_thanhvien FOREIGN KEY (MaThanhVien) REFERENCES ThanhVien(MaThanhVien),
     CONSTRAINT fk_tvsk_xacnhan FOREIGN KEY (XacNhanBoi) REFERENCES ThanhVien(MaThanhVien)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE CheckinSuKien (
+    MaCheckin INT PRIMARY KEY AUTO_INCREMENT,
+    MaSuKien VARCHAR(50) NOT NULL,
+    MaThanhVien VARCHAR(50) NOT NULL,
+    ThoiGianCheckin DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PhuongThuc VARCHAR(50) NOT NULL DEFAULT 'QR',
+    XacNhanBoi VARCHAR(50) NULL,
+    UNIQUE KEY uq_checkin_sukien_thanhvien (MaSuKien, MaThanhVien),
+    CONSTRAINT fk_checkin_sukien FOREIGN KEY (MaSuKien) REFERENCES SuKien(MaSuKien),
+    CONSTRAINT fk_checkin_thanhvien FOREIGN KEY (MaThanhVien) REFERENCES ThanhVien(MaThanhVien),
+    CONSTRAINT fk_checkin_xacnhan FOREIGN KEY (XacNhanBoi) REFERENCES ThanhVien(MaThanhVien)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE NhomHocTap (
@@ -167,9 +208,9 @@ CREATE TABLE ChungNhan (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO VaiTro (MaVaiTro, TenVaiTro) VALUES
-('TVCN', 'Chủ nhiệm'),
-('TVTG', 'Thành viên trợ giảng'),
-('TV', 'Thành viên thường');
+('TVCN', 'Admin / Phòng CTSV'),
+('TVTG', 'Ban tổ chức CLB'),
+('TV', 'Sinh viên');
 
 INSERT INTO ThanhVien (MaThanhVien, HoTen, Email, MatKhau, MaVaiTro) VALUES
 ('64132127', 'Trần Thanh Thái', 'thai.tt.64cntt@ntu.edu.vn', '123', 'TVCN'),
@@ -187,11 +228,24 @@ INSERT INTO LoaiSuKien (MaLoaiSuKien, TenLoaiSuKien, MoTa) VALUES
 ('CONTEST', 'Cuộc thi', 'Hoạt động thi đua, hackathon, cuộc thi học thuật.'),
 ('COMMUNITY', 'Hoạt động cộng đồng', 'Hoạt động ngoại khóa, định hướng và phục vụ cộng đồng.');
 
-INSERT INTO SuKien (MaSuKien, TenSuKien, MaLoaiSuKien, HocKy, NamHoc, MoTa, NgayBatDau, NgayKetThuc, NguoiToChuc) VALUES
-('SK001', 'Workshop Kỹ năng', 'WORKSHOP', 'HK1', '2024-2025', 'Buổi workshop về kỹ năng làm việc nhóm.', '2024-12-01 08:00:00', '2024-12-01 11:00:00', '64132127'),
-('SK002', 'Hackathon', 'CONTEST', 'HK1', '2024-2025', 'Cuộc thi lập trình kéo dài 48 giờ.', '2024-12-15 08:00:00', '2024-12-17 18:00:00', '64132127'),
-('SK003', 'Chào đón Tân Sinh Viên', 'COMMUNITY', 'HK1', '2024-2025', 'Hoạt động chào đón và định hướng.', '2024-11-30 08:00:00', '2024-11-30 11:00:00', '64132127'),
-('SK004', 'Buổi học Python cơ bản', 'WORKSHOP', 'HK2', '2024-2025', 'Dành cho người mới bắt đầu học lập trình Python.', '2025-03-05 08:00:00', '2025-03-05 11:00:00', '64131060');
+INSERT INTO CLB (MaCLB, TenCLB, MoTa, ChuNhiem, NgayThanhLap) VALUES
+('CLBTH', 'CLB Tin học', 'Câu lạc bộ học thuật về công nghệ thông tin, lập trình và hoạt động ngoại khóa.', '64132127', '2020-09-01'),
+('CLBWEB', 'Nhóm Web Infotech', 'Nhóm phụ trách các buổi học và workshop phát triển Web.', '64131060', '2022-09-01');
+
+INSERT INTO ThanhVienCLB (MaCLB, MaThanhVien, VaiTroCLB) VALUES
+('CLBTH', '64132127', 'Chủ nhiệm'),
+('CLBTH', '64131060', 'Ban tổ chức'),
+('CLBTH', '64132677', 'Ban tổ chức'),
+('CLBTH', '64130378', 'Thành viên'),
+('CLBTH', '64132848', 'Thành viên'),
+('CLBWEB', '64131060', 'Chủ nhiệm'),
+('CLBWEB', '64130152', 'Thành viên');
+
+INSERT INTO SuKien (MaSuKien, TenSuKien, MaCLB, MaLoaiSuKien, HocKy, NamHoc, MoTa, NgayBatDau, NgayKetThuc, NguoiToChuc, SucChua, CheckinToken, CheckinMoLuc, CheckinDongLuc) VALUES
+('SK001', 'Workshop Kỹ năng', 'CLBTH', 'WORKSHOP', 'HK1', '2024-2025', 'Buổi workshop về kỹ năng làm việc nhóm.', '2024-12-01 08:00:00', '2024-12-01 11:00:00', '64132127', 80, 'token-sk001-64131060', '2024-12-01 07:30:00', '2024-12-01 11:30:00'),
+('SK002', 'Hackathon', 'CLBTH', 'CONTEST', 'HK1', '2024-2025', 'Cuộc thi lập trình kéo dài 48 giờ.', '2024-12-15 08:00:00', '2024-12-17 18:00:00', '64132127', 60, 'token-sk002-64131060', '2024-12-15 07:30:00', '2024-12-17 18:30:00'),
+('SK003', 'Chào đón Tân Sinh Viên', 'CLBTH', 'COMMUNITY', 'HK1', '2024-2025', 'Hoạt động chào đón và định hướng.', '2024-11-30 08:00:00', '2024-11-30 11:00:00', '64132127', 120, 'token-sk003-64131060', '2024-11-30 07:30:00', '2024-11-30 11:30:00'),
+('SK004', 'Buổi học Python cơ bản', 'CLBWEB', 'WORKSHOP', 'HK2', '2024-2025', 'Dành cho người mới bắt đầu học lập trình Python.', '2025-03-05 08:00:00', '2025-03-05 11:00:00', '64131060', 40, 'token-sk004-64131060', '2025-03-05 07:30:00', '2025-03-05 11:30:00');
 
 INSERT INTO ThanhVienSuKien (MaSuKien, MaThanhVien, TrangThaiThamGia, NgayXacNhan, XacNhanBoi) VALUES
 ('SK001', '64130378', 'Đã tham gia', '2024-12-01 11:05:00', '64132127'),
@@ -200,6 +254,10 @@ INSERT INTO ThanhVienSuKien (MaSuKien, MaThanhVien, TrangThaiThamGia, NgayXacNha
 ('SK002', '64130152', 'Đã đăng ký', NULL, NULL),
 ('SK002', '64131973', 'Đã đăng ký', NULL, NULL),
 ('SK003', '64132409', 'Đã đăng ký', NULL, NULL);
+
+INSERT INTO CheckinSuKien (MaSuKien, MaThanhVien, ThoiGianCheckin, PhuongThuc, XacNhanBoi) VALUES
+('SK001', '64130378', '2024-12-01 11:05:00', 'Thủ công', '64132127'),
+('SK001', '64132848', '2024-12-01 11:08:00', 'Thủ công', '64132127');
 
 INSERT INTO NhomHocTap (MaNhom, TenNhom, TroGiang, MoTa) VALUES
 ('MNLT', 'Nhóm Nhập môn lập trình', '64132127', 'Nhóm học tập về lập trình căn bản.'),

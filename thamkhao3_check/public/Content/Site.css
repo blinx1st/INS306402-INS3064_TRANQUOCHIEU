@@ -584,6 +584,134 @@ textarea {
   background: #fff;
 }
 
+.qr-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.qr-box {
+  border: 1px solid #dce4f2;
+  border-radius: 8px;
+  padding: 18px;
+  background: #f8fafc;
+  text-align: center;
+}
+
+.qr-box img {
+  width: 280px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 12px;
+}
+
+.qr-box code {
+  display: block;
+  white-space: normal;
+  word-break: break-all;
+  color: #063b87;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin: 18px 0 24px;
+}
+
+.report-card {
+  border: 1px solid #dce4f2;
+  border-radius: 8px;
+  padding: 18px;
+  background: #f8fafc;
+}
+
+.report-card span {
+  display: block;
+  color: #5b6780;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.report-card strong {
+  color: #063b87;
+  font-size: 30px;
+}
+
+.certificate-page {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.certificate-card {
+  background: #fff;
+  border: 8px solid #063b87;
+  padding: 56px;
+  text-align: center;
+  color: #16213e;
+  box-shadow: 0 10px 30px rgba(15, 42, 80, 0.12);
+}
+
+.certificate-kicker {
+  color: #0d6efd;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin-bottom: 18px;
+}
+
+.certificate-card h1 {
+  font-size: 38px;
+  color: #063b87;
+  margin-bottom: 24px;
+}
+
+.certificate-card h2 {
+  font-size: 30px;
+  margin: 14px 0;
+}
+
+.certificate-card h3 {
+  font-size: 25px;
+  color: #0d6efd;
+  margin: 14px 0 20px;
+}
+
+.certificate-meta,
+.certificate-sign {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 34px;
+  text-align: left;
+}
+
+.certificate-sign {
+  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+@media print {
+  .topbar,
+  .footer,
+  .no-print {
+    display: none !important;
+  }
+
+  .page {
+    margin: 0;
+    max-width: none;
+    padding: 0;
+  }
+
+  .certificate-card {
+    box-shadow: none;
+    min-height: 700px;
+  }
+}
+
 @media (max-width: 720px) {
   .about-hero {
     min-height: 520px;
@@ -707,5 +835,19 @@ textarea {
 
   .post-body h2 {
     font-size: 16px;
+  }
+
+  .qr-layout,
+  .certificate-meta {
+    grid-template-columns: 1fr;
+    display: block;
+  }
+
+  .certificate-card {
+    padding: 28px 18px;
+  }
+
+  .certificate-card h1 {
+    font-size: 27px;
   }
 }

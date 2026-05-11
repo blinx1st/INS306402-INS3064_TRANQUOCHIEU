@@ -212,34 +212,44 @@
                 <?php if (current_role() === 'TVCN'): ?>
                     <a href="<?= url_for('TrangChu_64131060', 'GioiThieu_AdminPage_64131060') ?>">GIỚI THIỆU</a>
                     <a href="<?= url_for('BaiDang_Admin_64131060', 'BaiDang_Admin_64131060') ?>">TIN TỨC</a>
+                    <a href="<?= url_for('CLB_Admin_64131060', 'CLB_Admin_64131060') ?>">CLB</a>
                     <a href="<?= url_for('SuKien_Admin_64131060', 'TimKiemSuKien_Admin_64131060') ?>">SỰ KIỆN</a>
+                    <a href="<?= url_for('CheckinSuKien_Admin_64131060', 'CheckinSuKien_Admin_64131060') ?>">CHECK-IN</a>
                     <a href="<?= url_for('DiemRenLuyen_Admin_64131060', 'DiemRenLuyen_Admin_64131060') ?>">ĐIỂM RÈN LUYỆN</a>
                     <a href="<?= url_for('ChungNhan_Admin_64131060', 'ChungNhan_Admin_64131060') ?>">CHỨNG NHẬN</a>
+                    <a href="<?= url_for('BaoCao_Admin_64131060', 'ThongKe') ?>">BÁO CÁO</a>
                     <a href="<?= url_for('ThanhVien_Admin_64131060', 'TimKiemTV_Admin_64131060') ?>">THÀNH VIÊN</a>
                     <a href="<?= url_for('DiemDanh_Admin_64131060', 'Create') ?>">ĐIỂM DANH</a>
                     <a href="<?= url_for('Email_64131060', 'SendMail_Admin_64131060') ?>">MAIL</a>
                     <a href="<?= url_for('ThanhVien_Admin_64131060', 'Admin_Page_64131060') ?>">TRANG CÁ NHÂN</a>
+                    <a href="<?= url_for('Login_64131060', 'DoiMatKhau_64131060') ?>">ĐỔI MẬT KHẨU</a>
                     <a href="<?= url_for('Login_64131060', 'Logout_64131060') ?>">ĐĂNG XUẤT</a>
                 <?php elseif (current_role() === 'TVTG'): ?>
                     <a href="<?= url_for('TrangChu_64131060', 'GioiThieu_AssitantPage_64131060') ?>">GIỚI THIỆU</a>
                     <a href="<?= url_for('BaiDang_Assitant_64131060', 'BaiDang_Assitant_64131060') ?>">TIN TỨC</a>
+                    <a href="<?= url_for('CLB_Assitant_64131060', 'CLB_Assitant_64131060') ?>">CLB</a>
                     <a href="<?= url_for('SuKien_Assitant_64131060', 'TimKiemSuKien_Assitant_64131060') ?>">SỰ KIỆN</a>
+                    <a href="<?= url_for('CheckinSuKien_Assitant_64131060', 'CheckinSuKien_Assitant_64131060') ?>">CHECK-IN</a>
                     <a href="<?= url_for('DiemRenLuyen_Assitant_64131060', 'DiemRenLuyen_Assitant_64131060') ?>">ĐIỂM RÈN LUYỆN</a>
                     <a href="<?= url_for('ChungNhan_Assitant_64131060', 'ChungNhan_Assitant_64131060') ?>">CHỨNG NHẬN</a>
                     <a href="<?= url_for('ThanhVien_Assitant_64131060', 'TimKiemTV_Assitant_64131060') ?>">THÀNH VIÊN</a>
                     <a href="<?= url_for('DiemDanh_Assitant_64131060', 'Create') ?>">ĐIỂM DANH</a>
                     <a href="<?= url_for('Email_64131060', 'SendMail_Asstant_64131060') ?>">MAIL</a>
                     <a href="<?= url_for('ThanhVien_Assitant_64131060', 'Assitant_Page_64131060') ?>">TRANG CÁ NHÂN</a>
+                    <a href="<?= url_for('Login_64131060', 'DoiMatKhau_64131060') ?>">ĐỔI MẬT KHẨU</a>
                     <a href="<?= url_for('Login_64131060', 'Logout_64131060') ?>">ĐĂNG XUẤT</a>
                 <?php elseif (current_role() === 'TV'): ?>
                     <a href="<?= url_for('TrangChu_64131060', 'GioiThieu_MemberPage_64131060') ?>">GIỚI THIỆU</a>
                     <a href="<?= url_for('BaiDang_Member_64131060', 'BaiDang_Member_64131060') ?>">TIN TỨC</a>
                     <a href="<?= url_for('SuKien_Member_64131060', 'TimKiemSuKien_Member_64131060') ?>">SỰ KIỆN</a>
+                    <a href="<?= url_for('ThanhVienSuKien_Member_64131060', 'ThanhVienSuKien_Member_64131060') ?>">LỊCH SỬ</a>
+                    <a href="<?= url_for('CheckinSuKien_Member_64131060', 'CheckinSuKien_Member_64131060') ?>">CHECK-IN</a>
                     <a href="<?= url_for('DiemRenLuyen_Member_64131060', 'DiemRenLuyen_Member_64131060') ?>">ĐIỂM RÈN LUYỆN</a>
                     <a href="<?= url_for('ChungNhan_Member_64131060', 'ChungNhan_Member_64131060') ?>">CHỨNG NHẬN</a>
                     <a href="<?= url_for('DiemDanh_Member_64131060', 'Create') ?>">ĐIỂM DANH</a>
                     <a href="<?= url_for('Email_64131060', 'SendMail_Member_64131060') ?>">MAIL</a>
                     <a href="<?= url_for('ThanhVien_Member_64131060', 'Member_Page_64131060') ?>">TRANG CÁ NHÂN</a>
+                    <a href="<?= url_for('Login_64131060', 'DoiMatKhau_64131060') ?>">ĐỔI MẬT KHẨU</a>
                     <a href="<?= url_for('Login_64131060', 'Logout_64131060') ?>">ĐĂNG XUẤT</a>
                 <?php else: ?>
                     <a href="<?= url_for('TrangChu_64131060', 'TrangChu_64131060') ?>">TRANG CHỦ</a>

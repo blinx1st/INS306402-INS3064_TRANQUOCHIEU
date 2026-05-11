@@ -36,4 +36,32 @@ class Login_64131060Controller extends Controller
         session_start();
         redirect_to('Login_64131060', 'Login_64131060');
     }
+
+    public function DoiMatKhau_64131060(): void
+    {
+        $this->requireLogin();
+        $error = '';
+        $message = '';
+        if ($this->isPost()) {
+            $old = trim($_POST['MatKhauCu'] ?? '');
+            $new = trim($_POST['MatKhauMoi'] ?? '');
+            $confirm = trim($_POST['NhapLaiMatKhau'] ?? '');
+            try {
+                if ($old === '' || $new === '' || $confirm === '') {
+                    throw new InvalidArgumentException('Vui lòng nhập đầy đủ thông tin mật khẩu.');
+                }
+                if (strlen($new) < 6) {
+                    throw new InvalidArgumentException('Mật khẩu mới phải có ít nhất 6 ký tự.');
+                }
+                if ($new !== $confirm) {
+                    throw new InvalidArgumentException('Mật khẩu nhập lại không khớp.');
+                }
+                $this->repo()->updatePassword((string)current_member_id(), $old, $new);
+                $message = 'Đổi mật khẩu thành công.';
+            } catch (Throwable $e) {
+                $error = $e->getMessage();
+            }
+        }
+        $this->render('auth/change_password', ['title' => 'Đổi mật khẩu', 'error' => $error, 'message' => $message]);
+    }
 }

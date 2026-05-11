@@ -12,6 +12,25 @@
             <?php else: ?>
                 <input class="form-control" type="text" name="maSuKien" placeholder="Tìm kiếm mã sự kiện..." value="<?= h($data['searchValues']['maSuKien'] ?? '') ?>">
                 <input class="form-control" type="text" name="tenSuKien" placeholder="Tìm kiếm tên sự kiện..." value="<?= h($data['searchValues']['tenSuKien'] ?? '') ?>">
+                <select class="form-control" name="maCLB">
+                    <option value="">Tất cả CLB</option>
+                    <?php foreach (($data['filterOptions']['clbs'] ?? []) as $option): ?>
+                        <option value="<?= h($option['value']) ?>" <?= (string)($data['searchValues']['maCLB'] ?? '') === (string)$option['value'] ? 'selected' : '' ?>><?= h($option['label']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <select class="form-control" name="maLoaiSuKien">
+                    <option value="">Tất cả loại</option>
+                    <?php foreach (($data['filterOptions']['types'] ?? []) as $option): ?>
+                        <option value="<?= h($option['value']) ?>" <?= (string)($data['searchValues']['maLoaiSuKien'] ?? '') === (string)$option['value'] ? 'selected' : '' ?>><?= h($option['label']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <select class="form-control" name="hocKy">
+                    <option value="">Tất cả học kỳ</option>
+                    <?php foreach (['HK1', 'HK2', 'HK3'] as $hk): ?>
+                        <option value="<?= h($hk) ?>" <?= (string)($data['searchValues']['hocKy'] ?? '') === $hk ? 'selected' : '' ?>><?= h($hk) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <input class="form-control" type="text" name="namHoc" placeholder="Năm học 2024-2025" value="<?= h($data['searchValues']['namHoc'] ?? '') ?>">
             <?php endif; ?>
             <button class="btn-main" type="submit">TÌM KIẾM</button>
         </form>
@@ -25,6 +44,7 @@
                 <option value="HK3">HK3</option>
             </select>
             <input class="form-control" type="text" name="NamHoc" value="<?= h(date('Y') . '-' . ((int)date('Y') + 1)) ?>" pattern="\d{4}-\d{4}" required>
+            <input class="form-control" type="text" name="MaCLB" placeholder="Mã CLB (nếu cần)">
             <button class="btn-main" type="submit">EXPORT CUỐI KỲ</button>
         </form>
     <?php endif; ?>
@@ -33,6 +53,14 @@
     <div class="toolbar">
         <?php if (!empty($data['canWrite'])): ?>
             <a class="btn-main" href="<?= url_for($data['controller'], 'Create') ?>">THÊM MỚI</a>
+        <?php endif; ?>
+        <?php if (!$isPostList && current_role() === 'TVCN'): ?>
+            <a class="btn-back" href="<?= url_for('CLB_Admin_64131060', 'CLB_Admin_64131060') ?>">CLB</a>
+            <a class="btn-back" href="<?= url_for('ThanhVienCLB_Admin_64131060', 'ThanhVienCLB_Admin_64131060') ?>">THÀNH VIÊN CLB</a>
+            <a class="btn-back" href="<?= url_for('BaoCao_Admin_64131060', 'ThongKe') ?>">BÁO CÁO</a>
+        <?php elseif (!$isPostList && current_role() === 'TVTG'): ?>
+            <a class="btn-back" href="<?= url_for('CLB_Assitant_64131060', 'CLB_Assitant_64131060') ?>">CLB</a>
+            <a class="btn-back" href="<?= url_for('ThanhVienCLB_Assitant_64131060', 'ThanhVienCLB_Assitant_64131060') ?>">THÀNH VIÊN CLB</a>
         <?php endif; ?>
         <?php if (!$isPostList && ($data['controller'] ?? '') === 'DiemRenLuyen_Admin_64131060'): ?>
             <a class="btn-back" href="<?= url_for('LoaiSuKien_Admin_64131060', 'LoaiSuKien_Admin_64131060') ?>">LOẠI SỰ KIỆN</a>
@@ -45,8 +73,12 @@
             <a class="btn-back" href="<?= url_for('NhomHocTap_Assitant_64131060', 'NhomHocTap_Assitant_64131060') ?>">NHÓM HỌC TẬP</a>
         <?php elseif (!$isPostList && str_contains($data['controller'], 'SuKien_Admin')): ?>
             <a class="btn-back" href="<?= url_for('ThanhVienSuKien_Admin_64131060', 'ThanhVienSuKien_Admin_64131060') ?>">THÀNH VIÊN THAM GIA</a>
+            <a class="btn-back" href="<?= url_for('CheckinSuKien_Admin_64131060', 'CheckinSuKien_Admin_64131060') ?>">LOG CHECK-IN</a>
         <?php elseif (!$isPostList && str_contains($data['controller'], 'SuKien_Assitant')): ?>
             <a class="btn-back" href="<?= url_for('ThanhVienSuKien_Assitant_64131060', 'ThanhVienSuKien_Assitant_64131060') ?>">THÀNH VIÊN THAM GIA</a>
+            <a class="btn-back" href="<?= url_for('CheckinSuKien_Assitant_64131060', 'CheckinSuKien_Assitant_64131060') ?>">LOG CHECK-IN</a>
+        <?php elseif (!$isPostList && str_contains($data['controller'], 'ThanhVienSuKien_Member')): ?>
+            <a class="btn-back" href="<?= url_for('CheckinSuKien_Member_64131060', 'CheckinSuKien_Member_64131060') ?>">LỊCH SỬ CHECK-IN</a>
         <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -123,8 +155,15 @@
                         <?php if (!empty($data['cfg']['ajaxConfirm']) && current_role() && in_array(current_role(), ['TVCN', 'TVTG'], true) && ($row['TrangThaiThamGia'] ?? '') !== 'Đã tham gia'): ?>
                             <button class="btn btn-sm btn-success js-confirm-attendance" type="button" data-event="<?= h($row['MaSuKien']) ?>" data-member="<?= h($row['MaThanhVien']) ?>">Xác nhận</button>
                         <?php endif; ?>
+                        <?php if (($data['cfg']['table'] ?? '') === 'SuKien' && current_role() && in_array(current_role(), ['TVCN', 'TVTG'], true)): ?>
+                            <a class="btn btn-sm btn-success" href="<?= url_for($data['controller'], 'QRCode', ['MaSuKien' => $row['MaSuKien']]) ?>">QR</a>
+                        <?php endif; ?>
                         <?php if (($data['cfg']['table'] ?? '') === 'SuKien' && current_role() === 'TV'): ?>
                             <button class="btn btn-sm btn-success js-register-event" type="button" data-event="<?= h($row['MaSuKien']) ?>">Đăng ký</button>
+                            <button class="btn btn-sm btn-outline-danger js-cancel-registration" type="button" data-event="<?= h($row['MaSuKien']) ?>">Hủy đăng ký</button>
+                        <?php endif; ?>
+                        <?php if (($data['cfg']['table'] ?? '') === 'ChungNhan'): ?>
+                            <a class="btn btn-sm btn-primary" href="<?= url_for($data['controller'], 'In', ['MaChungNhan' => $row['MaChungNhan']]) ?>">In</a>
                         <?php endif; ?>
                     </td>
                 </tr>

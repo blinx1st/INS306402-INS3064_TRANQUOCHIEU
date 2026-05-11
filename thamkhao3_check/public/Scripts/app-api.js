@@ -68,6 +68,28 @@
                 registerButton.disabled = false;
                 showMessage(error.message, false);
             }
+            return;
+        }
+
+        const cancelButton = event.target.closest('.js-cancel-registration');
+        if (cancelButton) {
+            cancelButton.disabled = true;
+            try {
+                const body = new URLSearchParams({ MaSuKien: cancelButton.dataset.event || '' });
+                const payload = await fetch(baseUrl + '/Api_64131060/HuyDangKySuKien', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body
+                }).then(readJson);
+                showMessage(payload.message || 'Đã hủy đăng ký sự kiện.', true);
+            } catch (error) {
+                cancelButton.disabled = false;
+                showMessage(error.message, false);
+            }
         }
     });
 
@@ -84,11 +106,27 @@
             end.focus();
             return;
         }
+        const checkinOpen = form.querySelector('[name="CheckinMoLuc"]');
+        const checkinClose = form.querySelector('[name="CheckinDongLuc"]');
+        if (checkinOpen && checkinClose && checkinOpen.value && checkinClose.value && new Date(checkinClose.value) < new Date(checkinOpen.value)) {
+            event.preventDefault();
+            showMessage('Thời gian đóng QR phải sau hoặc bằng thời gian mở QR.', false);
+            checkinClose.focus();
+            return;
+        }
         const year = form.querySelector('[name="NamHoc"]');
         if (year && year.value && !/^\d{4}-\d{4}$/.test(year.value)) {
             event.preventDefault();
             showMessage('Năm học phải có dạng 2024-2025.', false);
             year.focus();
+            return;
+        }
+        const newPassword = form.querySelector('[name="MatKhauMoi"]');
+        const confirmPassword = form.querySelector('[name="NhapLaiMatKhau"]');
+        if (newPassword && confirmPassword && newPassword.value !== confirmPassword.value) {
+            event.preventDefault();
+            showMessage('Mật khẩu nhập lại không khớp.', false);
+            confirmPassword.focus();
         }
     });
 })();

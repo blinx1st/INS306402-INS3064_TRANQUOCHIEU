@@ -20,9 +20,13 @@ abstract class ResourceController extends Controller
     {
         $this->guardRead();
         $cfg = $this->repo->config($this->resourceKey);
-        $rows = $this->shouldLimitToCurrentMember()
-            ? $this->repo->allForMember($this->resourceKey, (string)current_member_id())
-            : $this->repo->all($this->resourceKey);
+        if ($this->shouldLimitToCurrentMember()) {
+            $rows = $this->repo->allForMember($this->resourceKey, (string)current_member_id());
+        } elseif ($this->shouldLimitToAssistantScope()) {
+            $rows = $this->repo->allForAssistantScope($this->resourceKey, (string)current_member_id());
+        } else {
+            $rows = $this->repo->all($this->resourceKey);
+        }
         $this->render('generic/list', [
             'title' => $this->pageTitle ?: $cfg['title'],
             'controller' => $this->controllerName,
@@ -57,7 +61,12 @@ abstract class ResourceController extends Controller
         $this->guardRead();
         $ma = trim($_GET['maSuKien'] ?? '');
         $ten = trim($_GET['tenSuKien'] ?? '');
-        $rows = $this->repo->searchEvents($ma, $ten);
+        $maCLB = trim($_GET['maCLB'] ?? '');
+        $maLoaiSuKien = trim($_GET['maLoaiSuKien'] ?? '');
+        $hocKy = trim($_GET['hocKy'] ?? '');
+        $namHoc = trim($_GET['namHoc'] ?? '');
+        $assistantId = current_role() === 'TVTG' ? (string)current_member_id() : null;
+        $rows = $this->repo->searchEvents($ma, $ten, $maCLB, $maLoaiSuKien, $hocKy, $namHoc, $assistantId);
         $this->render('generic/list', [
             'title' => $this->pageTitle ?: 'Tìm kiếm sự kiện',
             'controller' => $this->controllerName,
@@ -65,7 +74,11 @@ abstract class ResourceController extends Controller
             'cfg' => $this->repo->config('SuKien'),
             'rows' => $rows,
             'search' => 'events',
-            'searchValues' => ['maSuKien' => $ma, 'tenSuKien' => $ten],
+            'searchValues' => ['maSuKien' => $ma, 'tenSuKien' => $ten, 'maCLB' => $maCLB, 'maLoaiSuKien' => $maLoaiSuKien, 'hocKy' => $hocKy, 'namHoc' => $namHoc],
+            'filterOptions' => [
+                'clbs' => $this->repo->options(['table' => 'CLB', 'value' => 'MaCLB', 'label' => 'TenCLB']),
+                'types' => $this->repo->options(['table' => 'LoaiSuKien', 'value' => 'MaLoaiSuKien', 'label' => 'TenLoaiSuKien']),
+            ],
             'emptyMessage' => $rows ? '' : 'Không tìm thấy sự kiện phù hợp.',
             'canWrite' => $this->canWrite(),
         ]);
@@ -82,6 +95,7 @@ abstract class ResourceController extends Controller
             return;
         }
         $this->denyIfNotOwner($row);
+        $this->denyIfAssistantOutOfScope($row);
         $this->render('generic/details', [
             'title' => 'Thông tin chi tiết ' . lower_text($cfg['title']),
             'controller' => $this->controllerName,
@@ -101,6 +115,7 @@ abstract class ResourceController extends Controller
             try {
                 $data = $this->collectData($cfg);
                 Validator::validateResource($cfg, $data);
+                $this->enforceAssistantDataScope($data);
                 $this->repo->insert($this->resourceKey, $data);
                 $this->goAfter($this->afterCreate ?: ['controller' => $this->controllerName, 'action' => $this->listAction]);
             } catch (Throwable $e) {
@@ -122,10 +137,12 @@ abstract class ResourceController extends Controller
             return;
         }
         $this->denyIfNotOwner($row);
+        $this->denyIfAssistantOutOfScope($row);
         if ($this->isPost()) {
             try {
                 $data = $this->collectData($cfg, $row);
                 Validator::validateResource($cfg, $data);
+                $this->enforceAssistantDataScope($data);
                 $this->repo->update($this->resourceKey, $keys, $data);
                 $this->goAfter($this->afterEdit ?: ['controller' => $this->controllerName, 'action' => $this->listAction]);
             } catch (Throwable $e) {
@@ -147,6 +164,7 @@ abstract class ResourceController extends Controller
             return;
         }
         $this->denyIfNotOwner($row);
+        $this->denyIfAssistantOutOfScope($row);
         if ($this->isPost()) {
             try {
                 $this->repo->delete($this->resourceKey, $keys);
@@ -324,6 +342,9 @@ abstract class ResourceController extends Controller
 
     protected function writeRolesForController(): array
     {
+        if ($this->resourceKey === 'CheckinSuKien') {
+            return [];
+        }
         if (str_contains($this->controllerName, '_Admin_')) {
             return ['TVCN'];
         }
@@ -339,12 +360,51 @@ abstract class ResourceController extends Controller
     protected function shouldLimitToCurrentMember(): bool
     {
         return current_member_id()
-            && ($this->ownOnly || (str_contains($this->controllerName, '_Member_') && in_array($this->resourceKey, ['ThanhVien', 'DiemDanh', 'DiemRenLuyen', 'TongDiemRenLuyen', 'ChungNhan'], true)));
+            && ($this->ownOnly || (str_contains($this->controllerName, '_Member_') && in_array($this->resourceKey, ['ThanhVien', 'DiemDanh', 'DiemRenLuyen', 'TongDiemRenLuyen', 'ChungNhan', 'ThanhVienSuKien', 'CheckinSuKien'], true)));
+    }
+
+    protected function shouldLimitToAssistantScope(): bool
+    {
+        return current_role() === 'TVTG'
+            && current_member_id()
+            && in_array($this->resourceKey, ['CLB', 'ThanhVienCLB', 'SuKien', 'ThanhVienSuKien', 'CheckinSuKien', 'DiemRenLuyen', 'ChungNhan'], true);
     }
 
     protected function denyIfNotOwner(array $row): void
     {
         if ($this->shouldLimitToCurrentMember() && isset($row['MaThanhVien']) && (string)$row['MaThanhVien'] !== (string)current_member_id()) {
+            $this->denyUnauthorized();
+        }
+    }
+
+    protected function denyIfAssistantOutOfScope(array $row): void
+    {
+        if (!$this->shouldLimitToAssistantScope()) {
+            return;
+        }
+        $memberId = (string)current_member_id();
+        if (isset($row['MaSuKien']) && $this->repo->canManageEvent((string)$row['MaSuKien'], $memberId)) {
+            return;
+        }
+        if (isset($row['MaCLB']) && $this->repo->canManageClub((string)$row['MaCLB'], $memberId)) {
+            return;
+        }
+        $this->denyUnauthorized();
+    }
+
+    protected function enforceAssistantDataScope(array $data): void
+    {
+        if (current_role() !== 'TVTG' || !current_member_id()) {
+            return;
+        }
+        $memberId = (string)current_member_id();
+        if ($this->resourceKey === 'CLB' && (string)($data['ChuNhiem'] ?? '') === $memberId) {
+            return;
+        }
+        if (isset($data['MaSuKien']) && !$this->repo->canManageEvent((string)$data['MaSuKien'], $memberId)) {
+            $this->denyUnauthorized();
+        }
+        if (isset($data['MaCLB']) && !$this->repo->canManageClub((string)$data['MaCLB'], $memberId)) {
             $this->denyUnauthorized();
         }
     }
