@@ -4,13 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= h($data['title'] ?? 'CLB Tin Học NTU') ?></title>
+    <title><?= h($data['title'] ?? 'CLB Tin Học VNUIS') ?></title>
     <link rel="stylesheet" href="<?= asset_url('Content/bootstrap.min.css') ?>">
     <link rel="stylesheet" href="<?= asset_url('Content/Site.css') ?>">
     <link rel="stylesheet" href="<?= asset_url('Content/StyleAdmin.css') ?>">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
             background: #f5f7fb;
             color: #16213e;
         }
@@ -55,7 +55,6 @@
         .brand img {
             width: 54px;
             height: 54px;
-            border-radius: 50%;
             object-fit: cover;
         }
 
@@ -210,7 +209,7 @@
     <header class="topbar">
         <div class="topbar-inner">
             <a class="brand" href="<?= url_for('TrangChu_64131060', current_role() === 'TVCN' ? 'AdminPage_64131060' : (current_role() === 'TVTG' ? 'AssistantPage_64131060' : (current_role() === 'TV' ? 'MemberPage_64131060' : 'TrangChu_64131060'))) ?>">
-                <img src="<?= asset_url('image/Logo_Empty.png') ?>" alt="Logo">
+                <img src="<?= asset_url('image/Logo_EmptyVNU.png') ?>" alt="Logo">
                 <span>VNU-IS</span>
             </a>
             <nav class="navlinks">

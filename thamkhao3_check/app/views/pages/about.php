@@ -46,7 +46,7 @@
     </div>
 
     <div class="about-split">
-        <img src="<?= asset_url('Image/Logo_Info.png') ?>" alt="InfoTech Club VNUIS">
+        <img src="<?= asset_url('Image/VNU.png') ?>" alt="InfoTech Club VNUIS">
         <div>
             <span class="about-kicker">Hệ thống quản lý</span>
             <h2>Cổng thông tin dành cho thành viên CLB</h2>

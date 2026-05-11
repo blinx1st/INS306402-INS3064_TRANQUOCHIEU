@@ -17,7 +17,7 @@
         </div>
         <div class="certificate-sign">
             <strong>Đơn vị cấp</strong>
-            <span>CLB Tin học NTU</span>
+            <span>CLB Tin học VNUIS</span>
         </div>
     </article>
 </section>

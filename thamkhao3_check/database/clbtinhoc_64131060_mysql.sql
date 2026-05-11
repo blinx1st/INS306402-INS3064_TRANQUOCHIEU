@@ -213,15 +213,15 @@ INSERT INTO VaiTro (MaVaiTro, TenVaiTro) VALUES
 ('TV', 'Sinh viên');
 
 INSERT INTO ThanhVien (MaThanhVien, HoTen, Email, MatKhau, MaVaiTro) VALUES
-('64132127', 'Trần Thanh Thái', 'thai.tt.64cntt@ntu.edu.vn', '123', 'TVCN'),
-('64131060', 'Phạm Tuấn Kiệt', 'kiet.pt.64cntt@ntu.edu.vn', '123', 'TVTG'),
-('64132677', 'Vương Minh Trí', 'tri.vm.64cntt@ntu.edu.vn', '123', 'TVTG'),
-('64130378', 'Trần Diệp Hồng Dung', 'dung.tdh.64cntt@ntu.edu.vn', '123', 'TV'),
-('64132848', 'Trịnh Ngọc Tuấn', 'tuan.tn.64cntt@ntu.edu.vn', '123', 'TV'),
-('64130493', 'Cao Linh Hà', 'ha.cl.64cntt@ntu.edu.vn', '123', 'TV'),
-('64130152', 'Nguyễn Hồ Thanh Bình', 'binh.nht.64cntt@ntu.edu.vn', '123', 'TV'),
-('64131973', 'Nguyễn Hiểu Quyên', 'quyen.nh.64cntt@ntu.edu.vn', '123', 'TV'),
-('64132409', 'Vĩnh Thuận', 'thuan.v.64cntt@ntu.edu.vn', '123', 'TV');
+('64132127', 'Trần Thanh Thái', 'thai.tt.64cntt@vnuis.edu.vn', '123', 'TVCN'),
+('64131060', 'Phạm Tuấn Kiệt', 'kiet.pt.64cntt@vnuis.edu.vn', '123', 'TVTG'),
+('64132677', 'Vương Minh Trí', 'tri.vm.64cntt@vnuis.edu.vn', '123', 'TVTG'),
+('64130378', 'Trần Diệp Hồng Dung', 'dung.tdh.64cntt@vnuis.edu.vn', '123', 'TV'),
+('64132848', 'Trịnh Ngọc Tuấn', 'tuan.tn.64cntt@vnuis.edu.vn', '123', 'TV'),
+('64130493', 'Cao Linh Hà', 'ha.cl.64cntt@vnuis.edu.vn', '123', 'TV'),
+('64130152', 'Nguyễn Hồ Thanh Bình', 'binh.nht.64cntt@vnuis.edu.vn', '123', 'TV'),
+('64131973', 'Nguyễn Hiểu Quyên', 'quyen.nh.64cntt@vnuis.edu.vn', '123', 'TV'),
+('64132409', 'Vĩnh Thuận', 'thuan.v.64cntt@vnuis.edu.vn', '123', 'TV');
 
 INSERT INTO LoaiSuKien (MaLoaiSuKien, TenLoaiSuKien, MoTa) VALUES
 ('WORKSHOP', 'Workshop chuyên môn', 'Hoạt động học thuật, kỹ năng và chuyên môn.'),

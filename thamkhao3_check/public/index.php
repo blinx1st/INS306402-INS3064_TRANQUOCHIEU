@@ -2,6 +2,10 @@
 declare(strict_types=1);
 
 session_start();
+header('Content-Type: text/html; charset=UTF-8');
+if (function_exists('mb_internal_encoding')) {
+    mb_internal_encoding('UTF-8');
+}
 
 define('ROOT_PATH', dirname(__DIR__));
 define('APP_PATH', ROOT_PATH . DIRECTORY_SEPARATOR . 'app');
