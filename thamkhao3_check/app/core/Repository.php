@@ -442,6 +442,59 @@ class Repository
         return $stmt->fetchAll();
     }
 
+    public function syncTrainingPointsFromRules(): array
+    {
+        $this->db->beginTransaction();
+        try {
+            $missingSql = "SELECT sk.MaLoaiSuKien, COALESCE(lsk.TenLoaiSuKien, sk.MaLoaiSuKien) AS TenLoaiSuKien, sk.HocKy, sk.NamHoc, GROUP_CONCAT(DISTINCT sk.MaSuKien ORDER BY sk.MaSuKien SEPARATOR ', ') AS SuKienThieu
+                FROM ThanhVienSuKien tvsk
+                INNER JOIN SuKien sk ON sk.MaSuKien = tvsk.MaSuKien
+                LEFT JOIN LoaiSuKien lsk ON lsk.MaLoaiSuKien = sk.MaLoaiSuKien
+                LEFT JOIN QuyTacDiemRenLuyen qt ON qt.MaLoaiSuKien = sk.MaLoaiSuKien AND qt.HocKy = sk.HocKy AND qt.NamHoc = sk.NamHoc
+                WHERE tvsk.TrangThaiThamGia = 'Đã tham gia' AND qt.MaQuyTac IS NULL
+                GROUP BY sk.MaLoaiSuKien, TenLoaiSuKien, sk.HocKy, sk.NamHoc
+                ORDER BY sk.NamHoc DESC, sk.HocKy ASC, sk.MaLoaiSuKien ASC";
+            $missing = $this->db->query($missingSql)->fetchAll();
+            if ($missing) {
+                $parts = array_map(static function (array $row): string {
+                    return sprintf('%s (%s, %s, sự kiện: %s)', $row['TenLoaiSuKien'], $row['HocKy'], $row['NamHoc'], $row['SuKienThieu']);
+                }, $missing);
+                throw new InvalidArgumentException('Chưa cấu hình điểm rèn luyện cho: ' . implode('; ', $parts) . '.');
+            }
+
+            $this->db->exec('DELETE FROM TongDiemRenLuyen');
+            $this->db->exec('DELETE FROM DiemRenLuyen');
+
+            $points = $this->db->prepare("INSERT INTO DiemRenLuyen (MaThanhVien, MaSuKien, MaQuyTac, HocKy, NamHoc, SoDiem, GhiChu)
+                SELECT tvsk.MaThanhVien, tvsk.MaSuKien, qt.MaQuyTac, sk.HocKy, sk.NamHoc, qt.Diem, 'Đồng bộ tự động từ quy tắc điểm.'
+                FROM ThanhVienSuKien tvsk
+                INNER JOIN SuKien sk ON sk.MaSuKien = tvsk.MaSuKien
+                INNER JOIN QuyTacDiemRenLuyen qt ON qt.MaLoaiSuKien = sk.MaLoaiSuKien AND qt.HocKy = sk.HocKy AND qt.NamHoc = sk.NamHoc
+                WHERE tvsk.TrangThaiThamGia = 'Đã tham gia'");
+            $points->execute();
+            $pointRows = $points->rowCount();
+
+            $totals = $this->db->prepare("INSERT INTO TongDiemRenLuyen (MaThanhVien, HocKy, NamHoc, TongDiem)
+                SELECT MaThanhVien, HocKy, NamHoc, SUM(SoDiem)
+                FROM DiemRenLuyen
+                GROUP BY MaThanhVien, HocKy, NamHoc");
+            $totals->execute();
+            $totalRows = $totals->rowCount();
+
+            $this->db->commit();
+            return [
+                'SoDongDiem' => $pointRows,
+                'SoDongTong' => $totalRows,
+                'message' => 'Đã đồng bộ điểm rèn luyện từ quy tắc điểm.',
+            ];
+        } catch (Throwable $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
+    }
+
     public function termPointTotals(string $hocKy, string $namHoc, ?string $maCLB = null): array
     {
         if ($maCLB) {

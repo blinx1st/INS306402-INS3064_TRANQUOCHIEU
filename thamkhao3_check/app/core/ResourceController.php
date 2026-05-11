@@ -117,6 +117,7 @@ abstract class ResourceController extends Controller
                 Validator::validateResource($cfg, $data);
                 $this->enforceAssistantDataScope($data);
                 $this->repo->insert($this->resourceKey, $data);
+                $this->afterSuccessfulWrite('Create', $cfg, $data);
                 $this->goAfter($this->afterCreate ?: ['controller' => $this->controllerName, 'action' => $this->listAction]);
             } catch (Throwable $e) {
                 $this->renderForm($cfg, $_POST, 'Create', 'Thêm ' . lower_text($cfg['title']), $e->getMessage());
@@ -144,6 +145,7 @@ abstract class ResourceController extends Controller
                 Validator::validateResource($cfg, $data);
                 $this->enforceAssistantDataScope($data);
                 $this->repo->update($this->resourceKey, $keys, $data);
+                $this->afterSuccessfulWrite('Edit', $cfg, $data, $keys, $row);
                 $this->goAfter($this->afterEdit ?: ['controller' => $this->controllerName, 'action' => $this->listAction]);
             } catch (Throwable $e) {
                 $this->renderForm($cfg, array_merge($row, $_POST), 'Edit', 'Cập nhật ' . lower_text($cfg['title']), $e->getMessage(), $keys);
@@ -168,6 +170,7 @@ abstract class ResourceController extends Controller
         if ($this->isPost()) {
             try {
                 $this->repo->delete($this->resourceKey, $keys);
+                $this->afterSuccessfulWrite('Delete', $cfg, [], $keys, $row);
                 $this->goAfter($this->afterDelete ?: ['controller' => $this->controllerName, 'action' => $this->listAction]);
             } catch (Throwable $e) {
                 $this->renderDelete($cfg, $row, $keys, 'Không thể xóa vì dữ liệu đang được sử dụng ở bảng khác. ' . $e->getMessage());
@@ -217,6 +220,10 @@ abstract class ResourceController extends Controller
             'listAction' => $this->listAction,
             'canWrite' => $this->canWrite(),
         ]);
+    }
+
+    protected function afterSuccessfulWrite(string $action, array $cfg, array $data = [], array $keys = [], array $row = []): void
+    {
     }
 
     protected function renderDelete(array $cfg, array $row, array $keys, string $error = ''): void
@@ -315,6 +322,21 @@ abstract class ResourceController extends Controller
     {
         $roles = $this->writeRolesForController();
         if (!$roles) {
+            if ($this->isGeneratedPointResource()) {
+                $readRoles = $this->rolesForController();
+                if ($readRoles) {
+                    $this->requireRoles($readRoles);
+                } else {
+                    $this->requireLogin();
+                }
+                $this->render('generic/message', [
+                    'title' => 'Không nhập điểm thủ công',
+                    'message' => 'Điểm rèn luyện được tự động tính từ quy tắc điểm khi sinh viên tham gia sự kiện.',
+                    'buttonText' => 'QUAY VỀ',
+                    'buttonUrl' => url_for($this->controllerName, $this->listAction),
+                ]);
+                exit;
+            }
             $this->denyUnauthorized();
         }
         $this->requireRoles($roles);
@@ -342,7 +364,7 @@ abstract class ResourceController extends Controller
 
     protected function writeRolesForController(): array
     {
-        if ($this->resourceKey === 'CheckinSuKien') {
+        if ($this->resourceKey === 'CheckinSuKien' || $this->isGeneratedPointResource()) {
             return [];
         }
         if (str_contains($this->controllerName, '_Admin_')) {
@@ -355,6 +377,11 @@ abstract class ResourceController extends Controller
             return ['TV'];
         }
         return [];
+    }
+
+    protected function isGeneratedPointResource(): bool
+    {
+        return in_array($this->resourceKey, ['DiemRenLuyen', 'TongDiemRenLuyen'], true);
     }
 
     protected function shouldLimitToCurrentMember(): bool

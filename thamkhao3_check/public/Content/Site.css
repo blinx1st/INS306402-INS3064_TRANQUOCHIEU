@@ -52,7 +52,12 @@ textarea {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(6, 59, 135, 0.94), rgba(6, 59, 135, 0.62), rgba(6, 59, 135, 0.18));
+  background: linear-gradient(
+    90deg,
+    rgba(6, 59, 135, 0.94),
+    rgba(6, 59, 135, 0.62),
+    rgba(6, 59, 135, 0.18)
+  );
 }
 
 .about-hero-content {
@@ -723,7 +728,11 @@ textarea {
   }
 
   .about-hero::after {
-    background: linear-gradient(180deg, rgba(6, 59, 135, 0.32), rgba(6, 59, 135, 0.95));
+    background: linear-gradient(
+      180deg,
+      rgba(6, 59, 135, 0.32),
+      rgba(6, 59, 135, 0.95)
+    );
   }
 
   .about-hero-content {

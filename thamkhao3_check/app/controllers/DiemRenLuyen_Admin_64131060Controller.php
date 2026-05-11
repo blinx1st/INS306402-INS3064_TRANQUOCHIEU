@@ -10,19 +10,30 @@ class DiemRenLuyen_Admin_64131060Controller extends ResourceController
 
     public function ExportCsv(): void
     {
-        $this->requireRoles(['TVCN']);
-        $hocKy = trim($_GET['HocKy'] ?? '');
-        $namHoc = trim($_GET['NamHoc'] ?? '');
-        $maCLB = trim($_GET['MaCLB'] ?? '') ?: null;
-        Validator::validateResource([
-            'table' => 'ExportDiem',
-            'fields' => [
-                'HocKy' => ['label' => 'Học kỳ', 'type' => 'select_static', 'required' => true],
-                'NamHoc' => ['label' => 'Năm học', 'type' => 'text', 'required' => true, 'pattern' => '/^\d{4}-\d{4}$/'],
-            ],
-        ], ['HocKy' => $hocKy, 'NamHoc' => $namHoc]);
+        try {
+            $this->requireRoles(['TVCN']);
+            $hocKy = trim($_GET['HocKy'] ?? '');
+            $namHoc = trim($_GET['NamHoc'] ?? '');
+            $maCLB = trim($_GET['MaCLB'] ?? '') ?: null;
+            Validator::validateResource([
+                'table' => 'ExportDiem',
+                'fields' => [
+                    'HocKy' => ['label' => 'Học kỳ', 'type' => 'select_static', 'required' => true],
+                    'NamHoc' => ['label' => 'Năm học', 'type' => 'text', 'required' => true, 'pattern' => '/^\d{4}-\d{4}$/'],
+                ],
+            ], ['HocKy' => $hocKy, 'NamHoc' => $namHoc]);
 
-        $rows = $this->repo()->termPointTotals($hocKy, $namHoc, $maCLB);
+            $this->repo()->syncTrainingPointsFromRules();
+            $rows = $this->repo()->termPointTotals($hocKy, $namHoc, $maCLB);
+        } catch (Throwable $e) {
+            $this->render('generic/message', [
+                'title' => 'Không thể export điểm',
+                'message' => $e->getMessage(),
+                'buttonText' => 'QUAY VỀ',
+                'buttonUrl' => url_for('DiemRenLuyen_Admin_64131060', 'DiemRenLuyen_Admin_64131060'),
+            ]);
+            return;
+        }
         header('Content-Type: text/csv; charset=UTF-8');
         header('Content-Disposition: attachment; filename="diem-ren-luyen-' . $hocKy . '-' . $namHoc . '.csv"');
         echo "\xEF\xBB\xBF";
