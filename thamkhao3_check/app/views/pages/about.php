@@ -1,9 +1,9 @@
 <section class="about-page">
     <div class="about-hero">
-        <img src="<?= asset_url('Image/BannerVNU.jpg') ?>" alt="CLB Tin Học NTU">
+        <img src="<?= asset_url('Image/BannerVNU.jpg') ?>" alt="CLB Tin Học VNUIS">
         <div class="about-hero-content">
             <span class="about-kicker">VNUIS</span>
-            <h1>Câu lạc bộ Tin học NTU</h1>
+            <h1>Câu lạc bộ Tin học VNUIS - Tech</h1>
             <p>Nơi sinh viên yêu công nghệ cùng học tập, thực hành dự án, tổ chức sự kiện chuyên môn và ghi nhận hành trình rèn luyện trong suốt năm học.</p>
             <div class="about-actions">
                 <a class="btn-main" href="<?= url_for('Login_64131060', 'Login_64131060') ?>">THAM GIA NGAY</a>
@@ -23,7 +23,7 @@
             <span class="about-kicker">Mục tiêu</span>
             <h2>Học thật, làm thật, kết nối thật</h2>
         </div>
-        <p>CLB Tin học NTU tạo môi trường để sinh viên rèn kỹ năng lập trình, làm việc nhóm, thuyết trình và tham gia các hoạt động học thuật. Mỗi sự kiện, buổi học và hoạt động ngoại khóa đều được quản lý rõ ràng để sinh viên dễ đăng ký, theo dõi và nhận chứng nhận.</p>
+        <p>CLB Tin học VNUIS - Tech tạo môi trường để sinh viên rèn kỹ năng lập trình, làm việc nhóm, thuyết trình và tham gia các hoạt động học thuật. Mỗi sự kiện, buổi học và hoạt động ngoại khóa đều được quản lý rõ ràng để sinh viên dễ đăng ký, theo dõi và nhận chứng nhận.</p>
     </div>
 
     <div class="about-grid">
@@ -46,7 +46,7 @@
     </div>
 
     <div class="about-split">
-        <img src="<?= asset_url('Image/Logo_Info.png') ?>" alt="InfoTech Club NTU">
+        <img src="<?= asset_url('Image/Logo_Info.png') ?>" alt="InfoTech Club VNUIS">
         <div>
             <span class="about-kicker">Hệ thống quản lý</span>
             <h2>Cổng thông tin dành cho thành viên CLB</h2>
