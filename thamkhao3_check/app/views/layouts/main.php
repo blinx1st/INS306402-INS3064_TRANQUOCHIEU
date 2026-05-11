@@ -47,6 +47,11 @@
             font-size: 20px;
         }
 
+        .brand span {
+            font-size: 22px;
+            width: 90px;
+        }
+
         .brand img {
             width: 54px;
             height: 54px;
@@ -206,7 +211,7 @@
         <div class="topbar-inner">
             <a class="brand" href="<?= url_for('TrangChu_64131060', current_role() === 'TVCN' ? 'AdminPage_64131060' : (current_role() === 'TVTG' ? 'AssistantPage_64131060' : (current_role() === 'TV' ? 'MemberPage_64131060' : 'TrangChu_64131060'))) ?>">
                 <img src="<?= asset_url('Image/Logo_Empty.png') ?>" alt="Logo">
-                <span>INFOTECH CLUB NTU</span>
+                <span>VNU-IS</span>
             </a>
             <nav class="navlinks">
                 <?php if (current_role() === 'TVCN'): ?>
