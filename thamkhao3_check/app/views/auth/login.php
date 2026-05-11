@@ -1,7 +1,7 @@
 <section class="login-panel">
     <div class="login-brand">
         <img src="<?= asset_url('Image/Logo.jpg') ?>" alt="Câu lạc bộ tin học NTU">
-        <span class="login-badge">INFOTECH CLUB NTU</span>
+        <span class="login-badge">VNUIS</span>
         <h1>Chào mừng trở lại</h1>
         <p>Đăng nhập để quản lý sự kiện, điểm danh, điểm rèn luyện và chứng nhận tham gia câu lạc bộ.</p>
     </div>

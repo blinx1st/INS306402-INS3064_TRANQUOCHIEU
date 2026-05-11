@@ -1,8 +1,8 @@
 <section class="about-page">
     <div class="about-hero">
-        <img src="<?= asset_url('Image/Banner.jpg') ?>" alt="CLB Tin Học NTU">
+        <img src="<?= asset_url('Image/BannerVNU.jpg') ?>" alt="CLB Tin Học NTU">
         <div class="about-hero-content">
-            <span class="about-kicker">INFOTECH CLUB NTU</span>
+            <span class="about-kicker">VNUIS</span>
             <h1>Câu lạc bộ Tin học NTU</h1>
             <p>Nơi sinh viên yêu công nghệ cùng học tập, thực hành dự án, tổ chức sự kiện chuyên môn và ghi nhận hành trình rèn luyện trong suốt năm học.</p>
             <div class="about-actions">

@@ -210,7 +210,7 @@
     <header class="topbar">
         <div class="topbar-inner">
             <a class="brand" href="<?= url_for('TrangChu_64131060', current_role() === 'TVCN' ? 'AdminPage_64131060' : (current_role() === 'TVTG' ? 'AssistantPage_64131060' : (current_role() === 'TV' ? 'MemberPage_64131060' : 'TrangChu_64131060'))) ?>">
-                <img src="<?= asset_url('Image/Logo_Empty.png') ?>" alt="Logo">
+                <img src="<?= asset_url('image/Logo_Empty.png') ?>" alt="Logo">
                 <span>VNU-IS</span>
             </a>
             <nav class="navlinks">

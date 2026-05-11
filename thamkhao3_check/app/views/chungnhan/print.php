@@ -4,7 +4,7 @@
         <a class="btn-back" href="javascript:history.back()">QUAY VỀ</a>
     </div>
     <article class="certificate-card">
-        <div class="certificate-kicker">INFOTECH CLUB NTU</div>
+        <div class="certificate-kicker">VNUIS</div>
         <h1>CHỨNG NHẬN THAM GIA</h1>
         <p class="certificate-line">Chứng nhận sinh viên</p>
         <h2><?= h($data['cert']['HoTen'] ?? $data['cert']['MaThanhVien'] ?? '') ?></h2>
