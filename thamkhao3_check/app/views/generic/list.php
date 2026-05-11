@@ -1,5 +1,7 @@
-<section class="panel">
-    <h1 class="page-title"><?= h($data['title']) ?></h1>
+<section class="panel <?= ($data['controller'] ?? '') === 'BaiDang_64131060' ? 'post-panel' : '' ?>">
+    <?php if (($data['controller'] ?? '') !== 'BaiDang_64131060'): ?>
+        <h1 class="page-title"><?= h($data['title']) ?></h1>
+    <?php endif; ?>
 
     <?php if (!empty($data['search'])): ?>
         <form class="search-form" method="get" action="<?= url_for($data['controller'], $data['listAction']) ?>">
@@ -26,6 +28,7 @@
         </form>
     <?php endif; ?>
 
+    <?php if (($data['controller'] ?? '') !== 'BaiDang_64131060'): ?>
     <div class="toolbar">
         <?php if (!empty($data['canWrite'])): ?>
             <a class="btn-main" href="<?= url_for($data['controller'], 'Create') ?>">THÊM MỚI</a>
@@ -45,10 +48,41 @@
             <a class="btn-back" href="<?= url_for('ThanhVienSuKien_Assitant_64131060', 'ThanhVienSuKien_Assitant_64131060') ?>">THÀNH VIÊN THAM GIA</a>
         <?php endif; ?>
     </div>
+    <?php endif; ?>
 
     <?php if (!empty($data['emptyMessage'])): ?><div class="alert alert-warning"><?= h($data['emptyMessage']) ?></div><?php endif; ?>
     <div id="api-message" class="alert" style="display:none;"></div>
 
+    <?php if (($data['controller'] ?? '') === 'BaiDang_64131060'): ?>
+        <div class="post-feed">
+            <?php foreach ($data['rows'] as $row): ?>
+                <?php
+                $author = $row['TacGiaTen'] ?? $row['TacGia'] ?? 'CLB Tin Học';
+                $avatarText = function_exists('mb_substr') ? mb_substr(trim((string)$author), 0, 1, 'UTF-8') : substr(trim((string)$author), 0, 1);
+                $createdAt = $row['NgayTao'] ?? '';
+                $createdText = $createdAt && strtotime((string)$createdAt) ? date('d/m/Y h:i:s A', strtotime((string)$createdAt)) : $createdAt;
+                ?>
+                <article class="post-card">
+                    <header class="post-header">
+                        <span class="post-avatar" aria-hidden="true"><?= h($avatarText ?: 'C') ?></span>
+                        <div class="post-meta">
+                            <strong><?= h($author) ?></strong>
+                            <span><?= h($createdText) ?> · CLB Tin Học</span>
+                        </div>
+                    </header>
+                    <div class="post-body">
+                        <h2><?= h($row['TieuDe'] ?? '') ?></h2>
+                        <div class="post-text"><?= nl2br(h($row['NoiDung'] ?? '')) ?></div>
+                    </div>
+                    <?php if (!empty($row['Anh'])): ?>
+                        <div class="post-media">
+                            <img class="post-image" src="<?= asset_url('Image/' . $row['Anh']) ?>" alt="<?= h($row['TieuDe'] ?? 'Bài đăng') ?>">
+                        </div>
+                    <?php endif; ?>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
     <div class="table-responsive">
         <table class="table table-bordered table-striped align-middle">
             <thead><tr>
@@ -86,4 +120,5 @@
             </tbody>
         </table>
     </div>
+    <?php endif; ?>
 </section>

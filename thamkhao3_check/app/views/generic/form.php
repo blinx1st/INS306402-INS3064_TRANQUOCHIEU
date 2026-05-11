@@ -1,8 +1,44 @@
-<section class="panel">
-    <h1 class="page-title"><?= h($data['title']) ?></h1>
+<?php $isRegistrationForm = (($data['controller'] ?? '') === 'ThanhVien_Member_64131060' && ($data['action'] ?? '') === 'Create'); ?>
+<section class="panel <?= $isRegistrationForm ? 'registration-panel' : '' ?>">
+    <?php if ($isRegistrationForm): ?>
+        <div class="registration-heading">
+            <span class="registration-badge">INFOTECH CLUB NTU</span>
+            <h1><?= h($data['title']) ?></h1>
+            <p>Tạo tài khoản thành viên để đăng ký sự kiện, xem điểm rèn luyện và chứng nhận tham gia.</p>
+        </div>
+    <?php else: ?>
+        <h1 class="page-title"><?= h($data['title']) ?></h1>
+    <?php endif; ?>
     <?php if (!empty($data['error'])): ?><div class="alert alert-danger"><?= h($data['error']) ?></div><?php endif; ?>
     <form method="post" enctype="multipart/form-data" action="" data-validate-resource="1">
         <?php foreach (($data['keys'] ?? []) as $pk => $value): ?><input type="hidden" name="<?= h($pk) ?>" value="<?= h($value) ?>"><?php endforeach; ?>
+        <?php if ($isRegistrationForm): ?>
+        <div class="registration-table-wrap">
+            <table class="registration-table">
+                <tbody>
+                <?php foreach ($data['cfg']['fields'] as $field => $meta): ?>
+                    <?php
+                    $type = $meta['type'] ?? 'text';
+                    $value = $data['row'][$field] ?? '';
+                    $required = !empty($meta['required']) ? 'required' : '';
+                    $maxLength = isset($meta['max_length']) ? 'maxlength="' . h($meta['max_length']) . '"' : '';
+                    $pattern = isset($meta['pattern']) ? 'pattern="' . h(trim($meta['pattern'], '/')) . '"' : '';
+                    ?>
+                    <tr>
+                        <th><label for="<?= h($field) ?>"><?= h($meta['label'] ?? $field) ?></label></th>
+                        <td>
+                            <?php if ($type === 'textarea'): ?>
+                                <textarea class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>" <?= $required ?> <?= $maxLength ?>><?= h($value) ?></textarea>
+                            <?php else: ?>
+                                <input class="form-control" id="<?= h($field) ?>" name="<?= h($field) ?>" type="<?= h($type) ?>" value="<?= h($value) ?>" <?= $required ?> <?= $maxLength ?> <?= $pattern ?>>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php else: ?>
         <div class="form-grid">
             <?php foreach ($data['cfg']['fields'] as $field => $meta): ?>
                 <?php
@@ -51,9 +87,10 @@
                 </div>
             <?php endforeach; ?>
         </div>
+        <?php endif; ?>
         <div class="toolbar" style="margin-top:18px;">
-            <button class="btn-main" type="submit">LƯU</button>
-            <a class="btn-back" href="<?= url_for($data['controller'], $data['listAction']) ?>">QUAY VỀ</a>
+            <button class="btn-main" type="submit"><?= $isRegistrationForm ? 'ĐĂNG KÝ' : 'LƯU' ?></button>
+            <a class="btn-back" href="<?= h($data['backUrl'] ?? url_for($data['controller'], $data['listAction'])) ?>"><?= h($data['backText'] ?? 'QUAY VỀ') ?></a>
             <?php if (($data['controller'] ?? '') === 'DiemDanh_Assitant_64131060' && ($data['action'] ?? '') === 'Create'): ?>
                 <a class="btn-back" href="<?= url_for('DiemDanh_Assitant_64131060', 'DiemDanh_Assitant_64131060') ?>">HIỂN THỊ ĐIỂM DANH</a>
             <?php endif; ?>
