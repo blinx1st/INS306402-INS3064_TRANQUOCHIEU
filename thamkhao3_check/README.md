@@ -1,7 +1,3 @@
-# QL_CLB_TinHoc - bản XAMPP/PHP MVC
-
-Đây là bản port từ dự án ASP.NET MVC 5 sang PHP MVC tự viết để chạy bằng XAMPP và chỉnh sửa bằng Visual Studio Code.
-
 ## Yêu cầu
 
 - XAMPP có Apache, MySQL/MariaDB và PHP 8.x.
