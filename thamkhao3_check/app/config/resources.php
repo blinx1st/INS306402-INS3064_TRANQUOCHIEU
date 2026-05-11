@@ -89,7 +89,7 @@ return [
         'title' => 'Bài đăng',
         'select' => 'BaiDang.*, ThanhVien.HoTen AS TacGiaTen',
         'join' => 'LEFT JOIN ThanhVien ON ThanhVien.MaThanhVien = BaiDang.TacGia',
-        'order' => 'BaiDang.NgayTao DESC, BaiDang.MaBaiDang ASC',
+        'order' => 'BaiDang.NgayTao DESC, BaiDang.MaBaiDang DESC',
         'fields' => [
             'MaBaiDang' => ['label' => 'Mã bài đăng', 'type' => 'text', 'required' => true, 'max_length' => 50],
             'TieuDe' => ['label' => 'Tiêu đề', 'type' => 'text', 'required' => true, 'max_length' => 255],

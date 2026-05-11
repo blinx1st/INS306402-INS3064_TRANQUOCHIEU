@@ -1,5 +1,6 @@
-<section class="panel <?= ($data['controller'] ?? '') === 'BaiDang_64131060' ? 'post-panel' : '' ?>">
-    <?php if (($data['controller'] ?? '') !== 'BaiDang_64131060'): ?>
+<?php $isPostList = (($data['cfg']['table'] ?? '') === 'BaiDang'); ?>
+<section class="panel <?= $isPostList ? 'post-panel' : '' ?>">
+    <?php if (!$isPostList): ?>
         <h1 class="page-title"><?= h($data['title']) ?></h1>
     <?php endif; ?>
 
@@ -28,23 +29,23 @@
         </form>
     <?php endif; ?>
 
-    <?php if (($data['controller'] ?? '') !== 'BaiDang_64131060'): ?>
+    <?php if (!$isPostList || !empty($data['canWrite'])): ?>
     <div class="toolbar">
         <?php if (!empty($data['canWrite'])): ?>
             <a class="btn-main" href="<?= url_for($data['controller'], 'Create') ?>">THÊM MỚI</a>
         <?php endif; ?>
-        <?php if (($data['controller'] ?? '') === 'DiemRenLuyen_Admin_64131060'): ?>
+        <?php if (!$isPostList && ($data['controller'] ?? '') === 'DiemRenLuyen_Admin_64131060'): ?>
             <a class="btn-back" href="<?= url_for('LoaiSuKien_Admin_64131060', 'LoaiSuKien_Admin_64131060') ?>">LOẠI SỰ KIỆN</a>
             <a class="btn-back" href="<?= url_for('QuyTacDiemRenLuyen_Admin_64131060', 'QuyTacDiemRenLuyen_Admin_64131060') ?>">QUY TẮC ĐIỂM</a>
             <a class="btn-back" href="<?= url_for('TongDiemRenLuyen_Admin_64131060', 'TongDiemRenLuyen_Admin_64131060') ?>">TỔNG ĐIỂM</a>
         <?php endif; ?>
-        <?php if (str_contains($data['controller'], 'ThanhVien_Admin')): ?>
+        <?php if (!$isPostList && str_contains($data['controller'], 'ThanhVien_Admin')): ?>
             <a class="btn-back" href="<?= url_for('NhomHocTap_Admin_64131060', 'NhomHocTap_Admin_64131060') ?>">NHÓM HỌC TẬP</a>
-        <?php elseif (str_contains($data['controller'], 'ThanhVien_Assitant')): ?>
+        <?php elseif (!$isPostList && str_contains($data['controller'], 'ThanhVien_Assitant')): ?>
             <a class="btn-back" href="<?= url_for('NhomHocTap_Assitant_64131060', 'NhomHocTap_Assitant_64131060') ?>">NHÓM HỌC TẬP</a>
-        <?php elseif (str_contains($data['controller'], 'SuKien_Admin')): ?>
+        <?php elseif (!$isPostList && str_contains($data['controller'], 'SuKien_Admin')): ?>
             <a class="btn-back" href="<?= url_for('ThanhVienSuKien_Admin_64131060', 'ThanhVienSuKien_Admin_64131060') ?>">THÀNH VIÊN THAM GIA</a>
-        <?php elseif (str_contains($data['controller'], 'SuKien_Assitant')): ?>
+        <?php elseif (!$isPostList && str_contains($data['controller'], 'SuKien_Assitant')): ?>
             <a class="btn-back" href="<?= url_for('ThanhVienSuKien_Assitant_64131060', 'ThanhVienSuKien_Assitant_64131060') ?>">THÀNH VIÊN THAM GIA</a>
         <?php endif; ?>
     </div>
@@ -53,7 +54,7 @@
     <?php if (!empty($data['emptyMessage'])): ?><div class="alert alert-warning"><?= h($data['emptyMessage']) ?></div><?php endif; ?>
     <div id="api-message" class="alert" style="display:none;"></div>
 
-    <?php if (($data['controller'] ?? '') === 'BaiDang_64131060'): ?>
+    <?php if ($isPostList): ?>
         <div class="post-feed">
             <?php foreach ($data['rows'] as $row): ?>
                 <?php
@@ -61,6 +62,10 @@
                 $avatarText = function_exists('mb_substr') ? mb_substr(trim((string)$author), 0, 1, 'UTF-8') : substr(trim((string)$author), 0, 1);
                 $createdAt = $row['NgayTao'] ?? '';
                 $createdText = $createdAt && strtotime((string)$createdAt) ? date('d/m/Y h:i:s A', strtotime((string)$createdAt)) : $createdAt;
+                $params = [];
+                foreach ($data['cfg']['pk'] as $pk) {
+                    $params[$pk] = $row[$pk];
+                }
                 ?>
                 <article class="post-card">
                     <header class="post-header">
@@ -77,6 +82,13 @@
                     <?php if (!empty($row['Anh'])): ?>
                         <div class="post-media">
                             <img class="post-image" src="<?= asset_url('Image/' . $row['Anh']) ?>" alt="<?= h($row['TieuDe'] ?? 'Bài đăng') ?>">
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($data['canWrite'])): ?>
+                        <div class="post-admin-actions">
+                            <a class="btn btn-sm btn-info text-white" href="<?= url_for($data['controller'], 'Details', $params) ?>">Chi tiết</a>
+                            <a class="btn btn-sm btn-warning" href="<?= url_for($data['controller'], 'Edit', $params) ?>">Sửa</a>
+                            <a class="btn btn-sm btn-danger" href="<?= url_for($data['controller'], 'Delete', $params) ?>">Xóa</a>
                         </div>
                     <?php endif; ?>
                 </article>
