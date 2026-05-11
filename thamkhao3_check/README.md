@@ -25,19 +25,19 @@ app/config/database.php
 ## Chạy web
 
 ```text
-http://localhost/ins3064/INS306402-INS3064_TRANQUOCHIEU/thamkhao2_xampp/public/
+http://localhost/ins3064/INS306402-INS3064_TRANQUOCHIEU/thamkhao3_check/public/
 ```
 
 Trang đăng nhập:
 
 ```text
-http://localhost/ins3064/INS306402-INS3064_TRANQUOCHIEU/thamkhao2_xampp/public/Login_64131060/Login_64131060
+http://localhost/ins3064/INS306402-INS3064_TRANQUOCHIEU/thamkhao3_check/public/Login_64131060/Login_64131060
 ```
 
 Nếu Apache chưa bật `mod_rewrite` hoặc `.htaccess` chưa chạy, dùng tạm dạng:
 
 ```text
-http://localhost/ins3064/INS306402-INS3064_TRANQUOCHIEU/thamkhao2_xampp/public/index.php?url=Login_64131060/Login_64131060
+http://localhost/ins3064/INS306402-INS3064_TRANQUOCHIEU/thamkhao3_check/public/index.php?url=Login_64131060/Login_64131060
 ```
 
 ## Tài khoản mẫu
