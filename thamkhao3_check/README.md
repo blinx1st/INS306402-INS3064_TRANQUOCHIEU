@@ -51,10 +51,3 @@ Mật khẩu đều là `123`.
 ## Gửi email Gmail
 
 Chức năng email dùng SMTP Gmail. Gmail cần App Password, không dùng mật khẩu đăng nhập Gmail thường.
-
-## Ghi chú port
-
-- Route giữ dạng gần giống ASP.NET MVC: `/Controller/Action`.
-- Stored procedure SQL Server đã được chuyển thành query PDO parameterized trong model.
-- View Razor `.cshtml` đã được chuyển sang view PHP dùng chung cho CRUD.
-- Thư mục gốc `tham_khao1` không bị chỉnh sửa.
