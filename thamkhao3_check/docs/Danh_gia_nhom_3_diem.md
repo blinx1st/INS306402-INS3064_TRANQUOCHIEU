@@ -71,9 +71,9 @@ http://localhost/ins3064/INS306402-INS3064_TRANQUOCHIEU/thamkhao3_check/public/
 - Tai khoan mau:
 
 ```text
-Admin/Chu nhiem: thai.tt.64cntt@vnuis.edu.vn / 123
-Tro giang/Ban to chuc: kiet.pt.64cntt@vnuis.edu.vn / 123
-Sinh vien/Thanh vien: dung.tdh.64cntt@vnuis.edu.vn / 123
+Admin/Chu nhiem: quochieuu@vnuis.edu.vn / 123
+Tro giang/Ban to chuc: trang@vnuis.edu.vn / 123
+Sinh vien/Thanh vien: hongphuong@vnuis.edu.vn / 123
 ```
 
 ### Demo Flow De Xuat

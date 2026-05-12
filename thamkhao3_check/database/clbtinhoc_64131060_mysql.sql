@@ -213,10 +213,10 @@ INSERT INTO VaiTro (MaVaiTro, TenVaiTro) VALUES
 ('TV', 'Sinh viên');
 
 INSERT INTO ThanhVien (MaThanhVien, HoTen, Email, MatKhau, MaVaiTro) VALUES
-('64132127', 'Trần Thanh Thái', 'thai.tt.64cntt@vnuis.edu.vn', '123', 'TVCN'),
-('64131060', 'Phạm Tuấn Kiệt', 'kiet.pt.64cntt@vnuis.edu.vn', '123', 'TVTG'),
+('64132127', 'Trần Thanh Thái', 'quochieuu@vnuis.edu.vn', '123', 'TVCN'),
+('64131060', 'Phạm Tuấn Kiệt', 'trang@vnuis.edu.vn', '123', 'TVTG'),
 ('64132677', 'Vương Minh Trí', 'tri.vm.64cntt@vnuis.edu.vn', '123', 'TVTG'),
-('64130378', 'Trần Diệp Hồng Dung', 'dung.tdh.64cntt@vnuis.edu.vn', '123', 'TV'),
+('64130378', 'Trần Diệp Hồng Dung', 'hongphuong@vnuis.edu.vn', '123', 'TV'),
 ('64132848', 'Trịnh Ngọc Tuấn', 'tuan.tn.64cntt@vnuis.edu.vn', '123', 'TV'),
 ('64130493', 'Cao Linh Hà', 'ha.cl.64cntt@vnuis.edu.vn', '123', 'TV'),
 ('64130152', 'Nguyễn Hồ Thanh Bình', 'binh.nht.64cntt@vnuis.edu.vn', '123', 'TV'),

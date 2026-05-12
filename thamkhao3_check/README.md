@@ -44,9 +44,9 @@ http://localhost/ins3064/INS306402-INS3064_TRANQUOCHIEU/thamkhao3_check/public/i
 
 Mật khẩu đều là `123`.
 
-- Chủ nhiệm: `thai.tt.64cntt@vnuis.edu.vn`
-- Trợ giảng: `kiet.pt.64cntt@vnuis.edu.vn`
-- Thành viên: `dung.tdh.64cntt@vnuis.edu.vn`
+- Chủ nhiệm: `quochieuu@vnuis.edu.vn`
+- Trợ giảng: `trang@vnuis.edu.vn`
+- Thành viên: `hongphuong@vnuis.edu.vn`
 
 ## Gửi email Gmail
 
