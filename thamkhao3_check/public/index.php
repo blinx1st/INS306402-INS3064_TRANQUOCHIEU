@@ -16,7 +16,6 @@ require_once APP_PATH . '/core/Database.php';
 require_once APP_PATH . '/core/Controller.php';
 require_once APP_PATH . '/core/Repository.php';
 require_once APP_PATH . '/core/Validator.php';
-require_once APP_PATH . '/core/ResourceController.php';
 require_once APP_PATH . '/core/Mailer.php';
 require_once APP_PATH . '/core/Router.php';
 

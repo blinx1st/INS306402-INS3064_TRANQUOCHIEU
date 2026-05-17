@@ -1,12 +1,41 @@
 <?php
-class BaoCao_Admin_64131060Controller extends ResourceController
+class BaoCao_Admin_64131060Controller extends Controller
 {
-    protected string $resourceKey = 'BaoCao';
-    protected string $controllerName = 'BaoCao_Admin_64131060';
-    protected string $listAction = 'BaoCao_Admin_64131060';
-    protected string $pageTitle = 'Báo cáo';
+    private string $controllerName = 'BaoCao_Admin_64131060';
+    private string $listAction = 'BaoCao_Admin_64131060';
+    private string $pageTitle = 'Báo cáo';
 
     public function BaoCao_Admin_64131060(): void { $this->index(); }
+
+    public function index(): void
+    {
+        $this->requireRoles(['TVCN']);
+        $this->renderCrudList($this->pageTitle, $this->controllerName, $this->listAction, $this->cfg(), $this->repo()->listReports(), true);
+    }
+
+    public function Details(...$params): void
+    {
+        $this->requireRoles(['TVCN']);
+        $this->crudDetailsAction($this->controllerName, $this->listAction, $this->cfg(), $this->keys($params), fn($keys) => $this->repo()->findReport($keys['MaBaoCao']), true);
+    }
+
+    public function Create(): void
+    {
+        $this->requireRoles(['TVCN']);
+        $this->crudCreateAction($this->controllerName, $this->listAction, $this->cfg(), fn($data) => $this->repo()->createReport($data), 'Thêm báo cáo');
+    }
+
+    public function Edit(...$params): void
+    {
+        $this->requireRoles(['TVCN']);
+        $this->crudEditAction($this->controllerName, $this->listAction, $this->cfg(), $this->keys($params), fn($keys) => $this->repo()->findReport($keys['MaBaoCao']), fn($keys, $data) => $this->repo()->updateReport($keys['MaBaoCao'], $data), 'Cập nhật báo cáo');
+    }
+
+    public function Delete(...$params): void
+    {
+        $this->requireRoles(['TVCN']);
+        $this->crudDeleteAction($this->controllerName, $this->listAction, $this->cfg(), $this->keys($params), fn($keys) => $this->repo()->findReport($keys['MaBaoCao']), fn($keys) => $this->repo()->deleteReport($keys['MaBaoCao']));
+    }
 
     public function ThongKe(): void
     {
@@ -25,12 +54,14 @@ class BaoCao_Admin_64131060Controller extends ResourceController
             ]);
             return;
         }
-        $stats = $this->repo()->dashboardStats($hocKy, $namHoc, $maCLB);
         $this->render('baocao/dashboard', [
             'title' => 'Thống kê tổng hợp',
-            'stats' => $stats,
+            'stats' => $this->repo()->dashboardStats($hocKy, $namHoc, $maCLB),
             'filters' => ['HocKy' => $hocKy, 'NamHoc' => $namHoc, 'MaCLB' => $maCLB],
             'clbs' => $this->repo()->options(['table' => 'CLB', 'value' => 'MaCLB', 'label' => 'TenCLB']),
         ]);
     }
+
+    private function cfg(): array { return $this->resourceCfg('BaoCao'); }
+    private function keys(array $params): array { return $this->keysFromRequest($this->cfg(), $params); }
 }

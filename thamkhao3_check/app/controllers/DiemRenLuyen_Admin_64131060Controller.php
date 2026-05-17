@@ -1,12 +1,27 @@
 <?php
-class DiemRenLuyen_Admin_64131060Controller extends ResourceController
+class DiemRenLuyen_Admin_64131060Controller extends Controller
 {
-    protected string $resourceKey = 'DiemRenLuyen';
-    protected string $controllerName = 'DiemRenLuyen_Admin_64131060';
-    protected string $listAction = 'DiemRenLuyen_Admin_64131060';
-    protected string $pageTitle = 'Điểm rèn luyện';
+    private string $controllerName = 'DiemRenLuyen_Admin_64131060';
+    private string $listAction = 'DiemRenLuyen_Admin_64131060';
+    private string $pageTitle = 'Điểm rèn luyện';
 
     public function DiemRenLuyen_Admin_64131060(): void { $this->index(); }
+
+    public function index(): void
+    {
+        $this->requireRoles(['TVCN']);
+        $this->renderCrudList($this->pageTitle, $this->controllerName, $this->listAction, $this->cfg(), $this->repo()->listPoints(), false);
+    }
+
+    public function Details(...$params): void
+    {
+        $this->requireRoles(['TVCN']);
+        $this->crudDetailsAction($this->controllerName, $this->listAction, $this->cfg(), $this->keys($params), fn($keys) => $this->repo()->findPoint($keys['MaDiem']), false);
+    }
+
+    public function Create(): void { $this->requireRoles(['TVCN']); $this->renderGeneratedPointWriteBlocked($this->controllerName, $this->listAction); }
+    public function Edit(...$params): void { $this->requireRoles(['TVCN']); $this->renderGeneratedPointWriteBlocked($this->controllerName, $this->listAction); }
+    public function Delete(...$params): void { $this->requireRoles(['TVCN']); $this->renderGeneratedPointWriteBlocked($this->controllerName, $this->listAction); }
 
     public function ExportCsv(): void
     {
@@ -30,7 +45,7 @@ class DiemRenLuyen_Admin_64131060Controller extends ResourceController
                 'title' => 'Không thể export điểm',
                 'message' => $e->getMessage(),
                 'buttonText' => 'QUAY VỀ',
-                'buttonUrl' => url_for('DiemRenLuyen_Admin_64131060', 'DiemRenLuyen_Admin_64131060'),
+                'buttonUrl' => url_for($this->controllerName, $this->listAction),
             ]);
             return;
         }
@@ -45,4 +60,7 @@ class DiemRenLuyen_Admin_64131060Controller extends ResourceController
         fclose($out);
         exit;
     }
+
+    private function cfg(): array { return $this->resourceCfg('DiemRenLuyen'); }
+    private function keys(array $params): array { return $this->keysFromRequest($this->cfg(), $params); }
 }

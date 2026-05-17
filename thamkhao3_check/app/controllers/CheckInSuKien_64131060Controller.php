@@ -16,7 +16,7 @@ class CheckInSuKien_64131060Controller extends Controller
         } catch (Throwable $e) {
             $error = $e->getMessage();
         }
-        $event = $maSuKien ? $this->repo()->find('SuKien', ['MaSuKien' => $maSuKien]) : null;
+        $event = $maSuKien ? $this->repo()->findEvent($maSuKien) : null;
         $this->render('checkin/scan', [
             'title' => 'Check-in sự kiện',
             'event' => $event,
