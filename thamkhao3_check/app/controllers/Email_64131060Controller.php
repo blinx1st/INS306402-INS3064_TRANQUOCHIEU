@@ -10,16 +10,23 @@ class Email_64131060Controller extends Controller
 
     private function send(string $title, string $successAction): void
     {
+        $mailFrom = $this->mailFrom();
         if ($this->isPost()) {
             try {
-                (new Mailer())->send($_POST['From'] ?? '', $_POST['Password'] ?? '', $_POST['To'] ?? '', $_POST['Subject'] ?? '', $_POST['Body'] ?? '');
+                (new Mailer())->send('', '', $_POST['To'] ?? '', $_POST['Subject'] ?? '', $_POST['Body'] ?? '');
                 redirect_to('Email_64131060', $successAction);
             } catch (Throwable $e) {
-                $this->render('email/send', ['title' => $title, 'error' => $e->getMessage()]);
+                $this->render('email/send', ['title' => $title, 'error' => $e->getMessage(), 'mailFrom' => $mailFrom]);
             }
             return;
         }
-        $this->render('email/send', ['title' => $title]);
+        $this->render('email/send', ['title' => $title, 'mailFrom' => $mailFrom]);
+    }
+
+    private function mailFrom(): string
+    {
+        $config = require APP_PATH . '/config/mail.php';
+        return (string)($config['from'] ?? '');
     }
 
     private function alert(): void

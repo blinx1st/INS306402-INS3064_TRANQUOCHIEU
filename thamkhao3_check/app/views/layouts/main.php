@@ -155,8 +155,6 @@
             color: #19345d;
             font-weight: 700;
             padding: 9px 11px;
-            transform: translateX(-10px);
-            transition: background .15s ease, color .15s ease;
         }
 
         .account-dropdown .dropdown-item:hover {
@@ -248,10 +246,97 @@
             font-weight: 700;
             margin-bottom: 6px;
             display: block;
+            width: 100%;
+            padding-left: .75rem;
+            text-align: left;
+            box-sizing: border-box;
+            transform: translateX(160px);
         }
 
         .form-field textarea {
             min-height: 120px;
+        }
+
+        .mail-panel {
+            max-width: 850px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mail-panel .page-title {
+            width: 100%;
+            text-align: center;
+        }
+
+        .mail-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            max-width: 640px;
+            align-items: center;
+        }
+
+        .mail-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .mail-panel .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            width: 100%;
+            max-width: 620px;
+            min-width: 0;
+            align-items: center;
+        }
+
+        .mail-panel .form-field label {
+            width: 100%;
+            margin-bottom: 0;
+            color: #19345d;
+            line-height: 1.25;
+        }
+
+        .mail-panel .form-control {
+            width: 100%;
+            min-height: 44px;
+            border-color: #cfd9ea;
+            border-radius: 7px;
+            box-shadow: none;
+        }
+
+        .mail-panel .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, .12);
+        }
+
+        .mail-panel .form-control[readonly] {
+            background: #f2f6fc;
+            color: #344767;
+        }
+
+        .mail-panel textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .mail-actions {
+            width: 100%;
+            max-width: 620px;
+            justify-content: center;
+            margin: 2px 0 0;
+        }
+
+        .mail-actions .btn-main {
+            min-width: 170px;
+            text-align: center;
         }
 
         .footer {
@@ -331,6 +416,14 @@
 
             .login-box {
                 grid-template-columns: 1fr;
+            }
+
+            .mail-actions {
+                justify-content: stretch;
+            }
+
+            .mail-actions .btn-main {
+                width: 100%;
             }
         }
     </style>

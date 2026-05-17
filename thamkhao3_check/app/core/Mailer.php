@@ -4,6 +4,15 @@ class Mailer
     public function send(string $from, string $password, string $to, string $subject, string $body): void
     {
         $config = require APP_PATH . '/config/mail.php';
+        $from = trim($from) !== '' ? trim($from) : trim((string)($config['from'] ?? ''));
+        $password = trim($password) !== '' ? trim($password) : trim((string)($config['password'] ?? ''));
+        $to = trim($to);
+        if ($from === '' || $password === '') {
+            throw new RuntimeException('Chưa cấu hình email gửi hoặc App Password Gmail.');
+        }
+        if ($to === '') {
+            throw new RuntimeException('Vui lòng nhập email nhận.');
+        }
         $socket = stream_socket_client('tcp://' . $config['host'] . ':' . (int)$config['port'], $errno, $errstr, (int)$config['timeout']);
         if (!$socket) {
             throw new RuntimeException('Không thể kết nối SMTP: ' . $errstr);
