@@ -50,6 +50,17 @@ function current_member_id(): ?string
     return $_SESSION['MaThanhVien'] ?? null;
 }
 
+function current_user_name(): string
+{
+    foreach (['HoTen', 'Email', 'MaThanhVien'] as $key) {
+        $value = trim((string)($_SESSION[$key] ?? ''));
+        if ($value !== '') {
+            return $value;
+        }
+    }
+    return '';
+}
+
 function format_datetime_for_input($value): string
 {
     if (!$value) {

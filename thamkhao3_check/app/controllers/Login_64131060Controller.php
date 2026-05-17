@@ -14,6 +14,7 @@ class Login_64131060Controller extends Controller
             $_SESSION['Email'] = $member['Email'];
             $_SESSION['MaVaiTro'] = $member['MaVaiTro'];
             $_SESSION['MaThanhVien'] = $member['MaThanhVien'];
+            $_SESSION['HoTen'] = $member['HoTen'] ?? '';
             if ($member['MaVaiTro'] === 'TVCN') {
                 redirect_to('TrangChu_64131060', 'AdminPage_64131060');
             }
