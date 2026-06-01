@@ -1,4 +1,5 @@
 <?php
+// Validator kiểm tra dữ liệu ở backend trước khi ghi database, tránh chỉ phụ thuộc vào HTML/JS phía client.
 class Validator
 {
     public static function validateResource(array $cfg, array $data): void

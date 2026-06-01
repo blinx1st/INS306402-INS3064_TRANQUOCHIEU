@@ -51,3 +51,21 @@ Mật khẩu đều là `123`.
 ## Gửi email Gmail
 
 Chức năng email dùng SMTP Gmail. Gmail cần App Password, không dùng mật khẩu đăng nhập Gmail thường.
+
+## Cách giải thích source code khi bảo vệ
+
+Nên trình bày theo luồng MVC:
+
+1. `public/index.php` là cửa vào duy nhất của website, khởi tạo session và gọi Router.
+2. `app/core/Router.php` đọc URL dạng `Controller/Action/Params`.
+3. Controller kiểm tra quyền, nhận request và gọi Repository.
+4. `app/core/Repository.php` dùng PDO để truy vấn database và xử lý nghiệp vụ.
+5. `app/core/Validator.php` kiểm tra dữ liệu ở backend trước khi ghi database.
+6. View trong `app/views` chỉ hiển thị HTML.
+7. `app/controllers/Api_64131060Controller.php` trả JSON cho các thao tác dùng fetch/AJAX.
+
+Tài liệu ôn bảo vệ nằm trong thư mục `docs`:
+
+- `Giai_thich_kien_truc_MVC.md`
+- `Luong_nghiep_vu_chinh.md`
+- Các file `.docx` tương ứng để mở bằng Word.

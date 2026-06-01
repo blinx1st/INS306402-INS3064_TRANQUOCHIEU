@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+// File bootstrap của mô hình MVC: khởi tạo session, nạp core class và giao request cho Router.
 session_start();
 header('Content-Type: text/html; charset=UTF-8');
 if (function_exists('mb_internal_encoding')) {

@@ -1,4 +1,5 @@
 <?php
+// Router đọc URL dạng Controller/Action/Params và gọi đúng controller/action tương ứng.
 class Router
 {
     public function dispatch(): void

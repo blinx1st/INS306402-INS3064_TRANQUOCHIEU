@@ -1,4 +1,5 @@
 <?php
+// API nội bộ trả JSON cho các thao tác dùng fetch/AJAX như đăng ký sự kiện, check-in và xem điểm.
 class Api_64131060Controller extends Controller
 {
     public function DangKySuKien(): void
